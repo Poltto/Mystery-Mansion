@@ -1,0 +1,13 @@
+.character {
+  border: 1px solid red;
+  width: $square;
+  height: $square;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

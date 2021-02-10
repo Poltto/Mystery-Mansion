@@ -1,0 +1,32 @@
+@import './styles/blueprint-lower-floor';
+@import './styles/blueprint-lower-floor-section';
+@import './styles/blueprint-upper-floor';
+@import './styles/blueprint-upper-floor-section';
+
+.bottom-floor-container {
+  height: $height;
+  width: $width;
+
+  .blueprint-manor-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .blueprint-manor-single-container {
+      flex: 0 0 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s;
+      &:hover {
+        background-color: #efefef;
+      }
+
+      &:last-child {
+        border-top: none;
+      }
+    }
+  }
+}

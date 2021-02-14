@@ -1,10 +1,8 @@
 import { ACTIONS } from '../redux/actions';
 import { IObstacle } from 'Types/obstacle';
 import { IPoint } from 'Types/obstacleCreator';
-const initialState = {
-  obstacles: {}
-};
-export function ObstacleReducer(state = initialState, action) {
+
+export function ObstacleReducer(state = {obstacles: {}}, action) {
   if(action.type === ACTIONS.OBSTACLE_ACTIONS.ENUMS.SET_POSITION) {
     let obstacles = state.obstacles;
     obstacles[action.payload.id].position = action.payload.position;

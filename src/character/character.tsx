@@ -5,6 +5,7 @@ import { store } from '../redux/store';
 import { APP_ACTIONS } from '../appActions';
 import { useState } from 'react';
 import { IPoint } from 'Types/obstacleCreator';
+import { IObstacle } from 'Types/obstacle';
 export function Character() {
   const characterPosition = useSelector(state => {
     return state.CharacterReducer.characterPosition;
@@ -24,7 +25,7 @@ export function Character() {
     40: onMovement('down'),
     37: onMovement('left'),
     39: onMovement('right'),
-    81: onSimpleInteract()
+    81: onSimpleInteract
   };
 
 
@@ -47,10 +48,14 @@ export function Character() {
   }
 
   function onSimpleInteract() {
-    let targetPosition = returnPositionInDirection(characterPosition, lastDirection, 1);
-    return () => {
-      return dispatch(ACTIONS.CHARACTER_ACTIONS.INTERACT(targetPosition));
-    };
+    let targetPosition: IPoint = returnPositionInDirection(characterPosition, lastDirection, 1);
+    let obstacles = store.getState().ObstacleReducer.obstacles as IObstacle[];
+    let interactedObstacle = Object.values(obstacles).find((it) => {
+      return it.position.x === targetPosition.x && it.position.y === targetPosition.y && it.onInteract;
+    });
+    if(interactedObstacle?.onInteract) {
+      interactedObstacle.onInteract();
+    }
   }
 
   function onMovement(direction) {

@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { ACTIONS } from '../redux/actions';
 
 
 
@@ -13,15 +14,22 @@ export function Dialog() {
     dialog.header = undefined;
     dialog.content = undefined;
     dialog.footer = undefined;
+    let action = {
+      type: ACTIONS.DIALOG_ACTIONS.ENUMS.CLOSE_DIALOG
+    };
     if(dialog.onSubmit) {
-      dialog.onSubmit();
+      dialog.onSubmit().then(result => {
+        dispatch(action);
+      });
+    } else {
+      dispatch(action);
     }
   }
 
   const defaultContent = {
     header: '',
     content: '',
-    footer: '<div class="button-container"><button class="button button-primary" onClick="{submitDialog}"><div class="button-inner"><div class="button-icon icon-check"></div><div class="button-content">Ok</div></div></button></div>'
+    footer: ''
   };
 
   function getClass() {
@@ -41,7 +49,16 @@ export function Dialog() {
         <div className={'dialog-inner'}>
           <div dangerouslySetInnerHTML={getInnerHtml('header')} className={'dialog-header'}/>
           <div dangerouslySetInnerHTML={getInnerHtml('content')} className={'dialog-content'}/>
-          <div dangerouslySetInnerHTML={getInnerHtml('footer')} className={'dialog-footer'}/>
+          <div className={'dialog-footer'}>
+            <div className={'button-container'}>
+              <button className={'button button-primary'} onClick={submitDialog}>
+                <div className={'button-inner'}>
+                  <div className={'button-icon icon-check'}/>
+                  <div className={'button-content'}>Ok</div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

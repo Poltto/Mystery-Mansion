@@ -39,8 +39,8 @@ export function Obstacle(props) {
       return {};
     } else {
       let styles = {
-        left: obstacle?.position?.x * 30,
-        top: obstacle?.position?.y * 30
+        left: obstacle?.position?.x * 60,
+        top: obstacle?.position?.y * 60
       };
       return styles;
     }

@@ -1,6 +1,7 @@
 import { IObstacle } from 'Types/obstacle';
 import { ACTIONS } from './redux/actions';
 import { APP_ACTIONS } from './appActions';
+import { STATICS } from './enums/statics';
 
 const initialState = {
   characterPosition: {
@@ -13,14 +14,19 @@ export function AppReducer(state = initialState, action) {
   let html = $('html');
   let main = $('.main-container');
   if(isMovementAction(action.type)) {
-
-    checkCenteringAndScroll();
+    checkCenteringAndScroll(action);
   }
 
   return {...state};
 
 
-  function checkCenteringAndScroll() {
+  function checkCenteringAndScroll(usedAction: any) {
+    let directionOffset = {
+      left: {x: -STATICS.SQUARE, y: 0},
+      right: {x: STATICS.SQUARE, y: 0},
+      up: {x: 0, y: -STATICS.SQUARE},
+      down: {x: 0, y: STATICS.SQUARE},
+    };
 
     let character = $('.character');
     let scrollLeft = html.scrollLeft();
@@ -30,6 +36,8 @@ export function AppReducer(state = initialState, action) {
     let centerFromLeft = screenWidth / 2 + scrollLeft;
     let centerFromTop = screenHeight / 2 + scrollTop;
     let characterPosition = character.offset();
+    characterPosition.left += directionOffset[usedAction.payload.direction].x;
+    characterPosition.top += directionOffset[usedAction.payload.direction].y;
     let distancePastHorizontalCenter = characterPosition.left  - centerFromLeft;
     let distancePastVerticalCenter = characterPosition.top  - centerFromTop;
     if(distancePastHorizontalCenter > 0 || (distancePastHorizontalCenter < 0 && scrollLeft > 0)) {
@@ -45,7 +53,7 @@ export function AppReducer(state = initialState, action) {
     html.animate({
       scrollTop: y,
       scrollLeft: x
-    }, 50);
+    }, 200);
   }
 
   function hasTargetPositionObstacle(targetPosition) {

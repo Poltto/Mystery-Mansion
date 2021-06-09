@@ -7,11 +7,11 @@ export function GridSquare(props) {
   let [left, setLeft] = React.useState(getLeft());
 
   function getTop() {
-    return x * 30;
+    return x * 60;
   }
 
   function getLeft() {
-    return y * 30;
+    return y * 60;
   }
 
   function getClass() {

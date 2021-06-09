@@ -1,5 +1,4 @@
 .character {
-  border: 1px solid red;
   width: $square;
   height: $square;
   position: absolute;
@@ -9,5 +8,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: left 0.3s, top 0.3s;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility:    hidden;
+  -ms-backface-visibility:     hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transition-timing-function: linear;
 
+  .character-image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
 }

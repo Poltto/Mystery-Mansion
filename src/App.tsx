@@ -1,7 +1,6 @@
 import { ACTIONS } from './redux/actions';
 import { ObstacleCreator } from './obstacle-creator/obstacleCreator';
 import { Character } from './character/character';
-import { Dialog } from './dialog/dialog';
 import { useDispatch, useSelector } from 'react-redux';
 
 export function App() {
@@ -39,7 +38,10 @@ export function App() {
             content: '<div>Test content new</div>',
             footer: undefined,
             onSubmit: () => {
-              alert("You closed the dialog!");
+              return new Promise((resolve, reject) => {
+                console.log("You closed the dialog!");
+                resolve('OK');
+              });
             }
           }
         };
@@ -62,12 +64,11 @@ export function App() {
   let obstacleElements = ObstacleCreator({groups: pointGroups});
   return (
     <div className='main-container'>
-      <Character></Character>
+      <Character/>
       {obstacleElements}
       {/*{generateGrid().map(it => {*/}
       {/*  return <GridSquare key={it.x.toString() + '-' + it.y.toString()} x={it.x} y={it.y}/>*/}
       {/*})}*/}
-      <Dialog/>
     </div>
     // <Router>
     //   <Switch>

@@ -1,5 +1,6 @@
 export const APP_ACTIONS = {
-
+  KEYDOWN: 'keydown',
+  KEYUP: 'keyup',
   ENUMS: {
     SET_POSITION_UP: 'GLOBAL_SET_POSITION_UP',
     SET_POSITION_DOWN: 'GLOBAL_SET_POSITION_DOWN',

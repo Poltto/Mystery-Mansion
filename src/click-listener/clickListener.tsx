@@ -102,7 +102,6 @@ export function ClickListener() {
 
   function doDispatch(type: string) {
     let currentState = store.getState();
-
     let action = {
       type,
       payload: {

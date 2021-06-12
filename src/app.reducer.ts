@@ -13,7 +13,7 @@ export function AppReducer(state = initialState, action) {
   let body = $('body');
   let html = $('html');
   let main = $('.main-container');
-  if(isMovementAction(action.type)) {
+  if(isMovementAction(action)) {
     checkCenteringAndScroll(action);
   }
 
@@ -22,10 +22,10 @@ export function AppReducer(state = initialState, action) {
 
   function checkCenteringAndScroll(usedAction: any) {
     let directionOffset = {
-      left: {x: -STATICS.SQUARE, y: 0},
-      right: {x: STATICS.SQUARE, y: 0},
-      up: {x: 0, y: -STATICS.SQUARE},
-      down: {x: 0, y: STATICS.SQUARE},
+      37: {x: -STATICS.SQUARE, y: 0},
+      38: {x: STATICS.SQUARE, y: 0},
+      39: {x: 0, y: -STATICS.SQUARE},
+      40: {x: 0, y: STATICS.SQUARE},
     };
 
     let character = $('.character');
@@ -36,8 +36,8 @@ export function AppReducer(state = initialState, action) {
     let centerFromLeft = screenWidth / 2 + scrollLeft;
     let centerFromTop = screenHeight / 2 + scrollTop;
     let characterPosition = character.offset();
-    characterPosition.left += directionOffset[usedAction.payload.direction].x;
-    characterPosition.top += directionOffset[usedAction.payload.direction].y;
+    characterPosition.left += directionOffset[usedAction.payload.keycode].x;
+    characterPosition.top += directionOffset[usedAction.payload.keycode].y;
     let distancePastHorizontalCenter = characterPosition.left  - centerFromLeft;
     let distancePastVerticalCenter = characterPosition.top  - centerFromTop;
     if(distancePastHorizontalCenter > 0 || (distancePastHorizontalCenter < 0 && scrollLeft > 0)) {
@@ -64,8 +64,8 @@ export function AppReducer(state = initialState, action) {
     return hasObstacle && hasObstacle.isBlocking;
   }
 
-  function isMovementAction(newAction: string) {
-    return [APP_ACTIONS.ENUMS.SET_POSITION_RIGHT, APP_ACTIONS.ENUMS.SET_POSITION_LEFT, APP_ACTIONS.ENUMS.SET_POSITION_UP, APP_ACTIONS.ENUMS.SET_POSITION_DOWN].includes(newAction);
+  function isMovementAction(newAction: any) {
+    return [37, 38, 39, 40].includes(newAction?.payload?.keycode);
   }
 
 }

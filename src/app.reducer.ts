@@ -53,7 +53,7 @@ export function AppReducer(state = initialState, action) {
     html.animate({
       scrollTop: y,
       scrollLeft: x
-    }, 200);
+    }, 270, 'linear');
   }
 
   function hasTargetPositionObstacle(targetPosition) {

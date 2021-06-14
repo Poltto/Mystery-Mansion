@@ -1,6 +1,7 @@
 import { IObstacleCreatorOptions, IObstacleGroup, IPoint } from 'Types/obstacleCreator';
 import { Obstacle } from '../obstacle/obstacle';
 import { ReactElement } from 'react';
+import { OBSTACLE_TYPES } from 'Types/obstacleTypes';
 
 export function ObstacleCreator(options: IObstacleCreatorOptions) {
   function createObstacles() {
@@ -13,70 +14,87 @@ export function ObstacleCreator(options: IObstacleCreatorOptions) {
   }
 
   function processObstacleGroup(obstacleGroup: IObstacleGroup): ReactElement[] {
-    if(obstacleGroup.type === 'point') {
-      let reactElement = React.createElement(Obstacle, {
-        initialPosition: obstacleGroup.points[0],
-        key: Math.random(),
-        id: Math.random(),
-        isBlocking: obstacleGroup.isBlocking,
-        image: obstacleGroup.image,
-        onInteract: obstacleGroup.onInteract
-      });
-      return [reactElement];
-    }
-    if(obstacleGroup.type === 'line') {
+    if(obstacleGroup.type === OBSTACLE_TYPES.Point) {
+      return createElementsFromPoints(new Set(obstacleGroup.points), obstacleGroup);
+    } else if(obstacleGroup.type === OBSTACLE_TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
-      let points: Set<IPoint> = createLineBetweenTwoPoints(a.x, a.y, b.x, b.y);
-      let obstacles = [...points].map(point => {
-        let reactElement = React.createElement(Obstacle,
-          {
-            initialPosition: point,
-            key: Math.random(),
-            id: Math.random(),
-            isBlocking: obstacleGroup.isBlocking,
-            image: obstacleGroup.image,
-            onInteract: obstacleGroup.onInteract
-          });
-        return reactElement;
-      });
-      return obstacles;
-    } else if (obstacleGroup.type === 'plane') {
-      let totalPoints = new Set<IPoint>([]);
-      for(let i = 0; i < obstacleGroup.points.length; i++) {
-        let point1 = obstacleGroup.points[i];
-        let point2 = (i === obstacleGroup.points.length - 1) ? obstacleGroup.points[0] : obstacleGroup.points[i + 1];
-        let points: Set<IPoint> = createLineBetweenTwoPoints(point1.x, point1.y, point2.x, point2.y);
-        totalPoints = new Set<IPoint>([...points, ...totalPoints]);
-      }
+      let points: Set<IPoint> = createLineBetweenTwoPoints(a, b);
+      return createElementsFromPoints(points, obstacleGroup);
+    } else if (obstacleGroup.type === OBSTACLE_TYPES.Plane) {
+      let totalPoints = createPolygon(obstacleGroup);
       totalPoints = fillAreaInsidePoints(totalPoints);
-      let obstacles = [...totalPoints].map(point => {
-        let reactElement = React.createElement(Obstacle,
-          {initialPosition: point,
-            key: Math.random(),
-            id: Math.random(),
-            isBlocking: obstacleGroup.isBlocking,
-            image: obstacleGroup.image,
-            onInteract: obstacleGroup.onInteract
-          });
-        return reactElement;
-      });
-      return obstacles;
+      return createElementsFromPoints(totalPoints, obstacleGroup);
+    } else if (obstacleGroup.type === OBSTACLE_TYPES.Polygon) {
+      let totalPoints = createPolygon(obstacleGroup);
+      return createElementsFromPoints(totalPoints, obstacleGroup);
     }
   }
 
-  function createLineBetweenTwoPoints(x1: number, y1: number, x2: number, y2: number): Set<IPoint> {
+  function createElementsFromPoints(totalPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
+    let totalPointsAdjustedWithSpecialPoints;
+    if(obstacleGroup.specialPoints) {
+      let pointArray = [...totalPoints];
+      for(let specialPoint of obstacleGroup.specialPoints) {
+        let indexToReplace;
+        for(let i = 0; i < pointArray.length; i++) {
+          if(specialPoint.x === pointArray[i].x && specialPoint.y === pointArray[i].y) {
+            indexToReplace = i;
+            break;
+          }
+        }
+        pointArray[indexToReplace] = specialPoint;
+      }
+      totalPointsAdjustedWithSpecialPoints = new Set(pointArray);
+    } else {
+      totalPointsAdjustedWithSpecialPoints = totalPoints;
+    }
+
+
+
+    let obstacles = [...totalPointsAdjustedWithSpecialPoints].map(point => {
+      let isBlocking = (point.isBlocking === true || point.isBlocking === false) ? point.isBlocking : obstacleGroup.isBlocking;
+      let reactElement = React.createElement(Obstacle,
+        {initialPosition: point,
+          key: Math.random(),
+          id: Math.random(),
+          isBlocking,
+          image: point.image ?? obstacleGroup.image,
+          onInteract: obstacleGroup.onInteract
+        });
+      return reactElement;
+    });
+    return obstacles;
+  }
+
+  function createPolygon(obstacleGroup): Set<IPoint> {
+    let totalPoints = new Set<IPoint>([]);
+    for(let i = 0; i < obstacleGroup.points.length; i++) {
+      let point1 = obstacleGroup.points[i];
+      let point2 = (i === obstacleGroup.points.length - 1) ? obstacleGroup.points[0] : obstacleGroup.points[i + 1];
+      let points: Set<IPoint>;
+      if(point1.x === point2.x && point1.y === point2.y) {
+        points = new Set<IPoint>([point1]);
+      } else {
+        points = createLineBetweenTwoPoints(point1, point2);
+      }
+      totalPoints = new Set<IPoint>([...points, ...totalPoints]);
+    }
+    return totalPoints;
+  }
+
+  function createLineBetweenTwoPoints(point1: IPoint, point2: IPoint): Set<IPoint> {
     let points: IPoint[] = [];
-    let xDistance = Math.abs(x2 - x1);
-    let yDistance = Math.abs(y2 - y1);
+    let xDistance = Math.abs(point2.x - point1.x);
+    let yDistance = Math.abs(point2.y - point1.y);
     let xTraveled = 0;
     let yTraveled = 0;
-    let xDirection = x1 < x2 ? 'increment' : 'decrement';
-    let yDirection = y1 < y2 ? 'increment' : 'decrement';
+    let xDirection = point1.x < point2.x ? 'increment' : 'decrement';
+    let yDirection = point1.y < point2.y ? 'increment' : 'decrement';
     let rounds = 0;
     while((xTraveled < xDistance || yTraveled < yDistance) && rounds < 1000) {
-      let x = xDirection === 'increment' ? x1 + xTraveled : x1 - xTraveled;
-      let y = yDirection === 'increment' ? y1 + yTraveled : y1 - yTraveled;
+      let x = xDirection === 'increment' ? point1.x + xTraveled : point1.x - xTraveled;
+      let y = yDirection === 'increment' ? point1.y + yTraveled : point1.y - yTraveled;
       rounds++;
       points.push({x, y});
       let xyRatio = xDistance / yDistance;

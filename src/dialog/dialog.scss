@@ -1,5 +1,6 @@
 .dialog-container {
   font-family: 'Chancery';
+  z-index: 99;
 
   &.visible {
     position: fixed;

@@ -1,7 +1,7 @@
 import { IObstacleCreatorOptions, IObstacleGroup, IPoint } from 'Types/obstacleCreator';
 import { Obstacle } from '../obstacle/obstacle';
 import { ReactElement } from 'react';
-import { OBSTACLE_TYPES } from 'Types/obstacleTypes';
+import { OBSTACLE_CREATOR_TYPES } from 'Types/obstacleTypes';
 
 export function ObstacleCreator(options: IObstacleCreatorOptions) {
   function createObstacles() {
@@ -14,18 +14,18 @@ export function ObstacleCreator(options: IObstacleCreatorOptions) {
   }
 
   function processObstacleGroup(obstacleGroup: IObstacleGroup): ReactElement[] {
-    if(obstacleGroup.type === OBSTACLE_TYPES.Point) {
+    if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Point) {
       return createElementsFromPoints(new Set(obstacleGroup.points), obstacleGroup);
-    } else if(obstacleGroup.type === OBSTACLE_TYPES.Line) {
+    } else if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
       let points: Set<IPoint> = createLineBetweenTwoPoints(a, b);
       return createElementsFromPoints(points, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_TYPES.Plane) {
+    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Plane) {
       let totalPoints = createPolygon(obstacleGroup);
       totalPoints = fillAreaInsidePoints(totalPoints);
       return createElementsFromPoints(totalPoints, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_TYPES.Polygon) {
+    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Polygon) {
       let totalPoints = createPolygon(obstacleGroup);
       return createElementsFromPoints(totalPoints, obstacleGroup);
     }

@@ -2,7 +2,7 @@ import { ACTIONS } from './redux/actions';
 import { ObstacleCreator } from './obstacle-creator/obstacleCreator';
 import { Character } from './character/character';
 import { useDispatch, useSelector } from 'react-redux';
-import { OBSTACLE_TYPES } from 'Types/obstacleTypes';
+import { OBSTACLE_CREATOR_TYPES, OBSTACLE_TEXTURES } from 'Types/obstacleTypes';
 
 export function App() {
   const dispatch = useDispatch();
@@ -62,11 +62,11 @@ export function App() {
     //   points: [{x: 10, y: 0}, {x: 15, y: 0}, {x: 15, y: 1}, {x: 10, y: 1}]
     // },
     {
-      type: OBSTACLE_TYPES.Polygon,
+      type: OBSTACLE_CREATOR_TYPES.Polygon,
       isBlocking: true,
-      image: '/images/wall_1.png',
+      image: OBSTACLE_TEXTURES.WALL_1,
       points: [{x: 10, y: 2}, {x: 20, y: 2}, {x: 20, y: 8}, {x: 10, y: 8}],
-      specialPoints: [{x: 15, y: 8, image: '/images/wood_floor_1.png', isBlocking: false}]
+      specialPoints: [{x: 15, y: 8, image: OBSTACLE_TEXTURES.WOOD_FLOOR_1, isBlocking: false}]
 
     }
   ];

@@ -1,7 +1,8 @@
-import { IObstacleCreatorOptions, IObstacleGroup, IPoint } from 'Types/obstacleCreator';
+import { IObstacleCreatorOptions, IObstacleGroup } from 'Types/obstacleCreator';
 import { Obstacle } from '../obstacle/obstacle';
 import { ReactElement } from 'react';
 import { OBSTACLE_CREATOR_TYPES } from 'Types/obstacleTypes';
+import { IPoint } from 'Types/point';
 
 export function ObstacleCreator(options: IObstacleCreatorOptions) {
   function createObstacles() {

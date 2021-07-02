@@ -1,4 +1,4 @@
-import { IPoint } from 'Types/obstacleCreator';
+import { IPoint } from 'Types/point';
 
 export const CHARACTER_ACTIONS = {
 

@@ -9,12 +9,14 @@ import { App } from './App';
 import * as React from 'react';
 import { ClickListener } from './click-listener/clickListener';
 import { Dialog } from './dialog/dialog';
+import { Inventory } from './inventory/inventory';
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <ClickListener/>
       <Dialog/>
+      <Inventory/>
       <App/>
     </BrowserRouter>
   </Provider>,

@@ -1,0 +1,14 @@
+.item {
+  height: $square;
+  width: $square;
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    height: $square;
+    width: $square;
+    object-fit: contain;
+  }
+}

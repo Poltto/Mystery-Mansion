@@ -1,7 +1,6 @@
 import { ACTIONS } from '../redux/actions';
 import { IObstacle } from 'Types/obstacle';
-import { IPoint } from 'Types/obstacleCreator';
-
+import { IPoint } from 'Types/point';
 const initialState = {
   characterPosition: {
     x: 0,

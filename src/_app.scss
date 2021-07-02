@@ -11,6 +11,9 @@ $square: calc(#{$height} / 50);
 @import './obstacle/obstacle';
 @import './icomoon/style.css';
 @import './dialog/dialog';
+@import './inventory/inventory';
+@import './item/item';
+@import './itemSlot/itemSlot';
 
 @font-face {
   font-family: 'Medieval';
@@ -38,6 +41,8 @@ html {
 
   body {
     height: 100%;
+    margin: 0;
+    padding: 0;
   }
 }
 #root {

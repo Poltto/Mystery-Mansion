@@ -3,9 +3,10 @@ import { useEffect, useRef } from 'react';
 import { useEventListener } from '../use-event-listener';
 import { ACTIONS } from '../redux/actions';
 import { store } from '../redux/store';
-import { IPoint } from 'Types/obstacleCreator';
+import { IPoint } from 'Types/point';
 import { IObstacle } from 'Types/obstacle';
 import { useSelector } from 'react-redux';
+import { IItem } from 'Types/item';
 
 export function ClickListener() {
 
@@ -13,6 +14,9 @@ export function ClickListener() {
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
   const obstacles: IObstacle[] = useSelector(state => {
     return state.ObstacleReducer.obstacles;
+  });
+  const items: IItem[] = useSelector(state => {
+    return state.ItemReducer.items;
   });
   const characterDirection = useSelector(state => {
     return state.CharacterReducer.characterDirection;
@@ -33,10 +37,22 @@ export function ClickListener() {
     }, 20);
   }, []);
 
+  useEventListener('dblclick', (event) => {
+    let path = event.path;
+    let targetInventorySlot = path.find(element => {
+      return element.className.includes('inventory-slot');
+    });
+    if(targetInventorySlot) {
+      // let action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT();
+    }
+    console.log(event);
+  });
 
   useEventListener('keydown', (event) => {
     if(event.keyCode === 81) {
       onSimpleInteract();
+    } else if (event.keyCode === 73) {
+      onToggleInventory();
     } else {
       let index = characterRef.current.keysDown.findIndex(item => item === event.keyCode);
       if(characterRef.current.keysDown.length && index === characterRef.current.keysDown.length - 1) {
@@ -59,20 +75,28 @@ export function ClickListener() {
     let index = characterRef.current.keysDown.findIndex(item => {
       return item === event.keyCode;
     });
-    console.log(index, characterRef.current.keysDown);
     if(index > -1) {
       characterRef.current.keysDown.splice(index, 1);
     }
     doDispatch(ACTIONS.APP_ACTIONS.KEYUP);
   });
 
+  function onToggleInventory() {
+    doDispatch(ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE);
+  }
+
   function onSimpleInteract() {
     let targetPosition: IPoint = returnPositionInDirection(characterPosition, characterDirection, 1);
     let interactedObstacle = Object.values(obstacles).find((it) => {
       return it.position.x === targetPosition.x && it.position.y === targetPosition.y && it.onInteract;
     });
+    let interactedItem = Object.values(items).find(it => {
+      return it.position.x === targetPosition.x && it.position.y === targetPosition.y;
+    });
     if(interactedObstacle?.onInteract) {
       interactedObstacle.onInteract();
+    } else if(interactedItem?.onInteract) {
+      interactedItem.onInteract([interactedItem]);
     }
   }
 

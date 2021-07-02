@@ -3,10 +3,15 @@ import { ObstacleCreator } from './obstacle-creator/obstacleCreator';
 import { Character } from './character/character';
 import { useDispatch, useSelector } from 'react-redux';
 import { OBSTACLE_CREATOR_TYPES, OBSTACLE_TEXTURES } from 'Types/obstacleTypes';
+import { IItem } from 'Types/item';
+import { ItemCreator } from './item-creator/itemCreator';
+import { IExistingItems } from 'Types/existingItems';
 
 export function App() {
   const dispatch = useDispatch();
-
+  const existingItems: IExistingItems = useSelector(state => {
+    return state.ItemReducer.items;
+  });
 
   window.addEventListener('keydown', function(e) {
     // space and arrow keys
@@ -15,7 +20,38 @@ export function App() {
     }
   }, false);
 
-
+  let items: IItem[] = [
+    {
+      id: 1,
+      name: 'First Item',
+      isInInventory: false,
+      onInteract: (interactedItems: IItem[]) => {
+        console.log(interactedItems);
+        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems, existingItems);
+        dispatch(action);
+      },
+      position: {
+        x: 2,
+        y: 2
+      },
+      image: '/images/grandma_walking_up_1.png'
+    },
+    {
+      id: 2,
+      name: 'Second Item',
+      isInInventory: false,
+      onInteract: (interactedItems: IItem[]) => {
+        console.log(interactedItems);
+        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems, existingItems);
+        dispatch(action);
+      },
+      position: {
+        x: 3,
+        y: 3
+      },
+      image: '/images/grandma_walking_down_1.png'
+    }
+  ];
 
   let pointGroups = [
     // {
@@ -71,10 +107,12 @@ export function App() {
     }
   ];
   let obstacleElements = ObstacleCreator({groups: pointGroups});
+  let itemElements = ItemCreator({items: items});
   return (
     <div className='main-container'>
       <Character/>
       {obstacleElements}
+      {itemElements}
       {/*{generateGrid().map(it => {*/}
       {/*  return <GridSquare key={it.x.toString() + '-' + it.y.toString()} x={it.x} y={it.y}/>*/}
       {/*})}*/}

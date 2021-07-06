@@ -13,20 +13,20 @@ import { BlueprintUpperFloorSection } from './upper/blueprint-upper-floor-sectio
 
 export function Blueprint({match}) {
   let template =
-    <div className="blueprint-container">
+    <div className='blueprint-container'>
       <Switch>
-        <Route exact path="/blueprint">
-          <div className="blueprint-manor-container">
-            <Link to="/blueprint/lower" className="blueprint-manor-single-container">Lower</Link>
-            <Link to="/blueprint/upper" className="blueprint-manor-single-container">Upper</Link>
+        <Route exact={true} path='/blueprint'>
+          <div className='blueprint-manor-container'>
+            <Link to='/blueprint/lower' className='blueprint-manor-single-container'>Lower</Link>
+            <Link to='/blueprint/upper' className='blueprint-manor-single-container'>Upper</Link>
           </div>
         </Route>
-        <Route exact path="/blueprint/lower" component={BlueprintLowerFloor}/>
-        <Route exact path="/blueprint/upper" component={BlueprintUpperFloor}/>
-        <Route path="/blueprint/lower/:section" component={BlueprintLowerFloorSection}/>
-        <Route path="/blueprint/upper/:section" component={BlueprintUpperFloorSection}/>
+        <Route exact={true} path='/blueprint/lower' component={BlueprintLowerFloor}/>
+        <Route exact={true} path='/blueprint/upper' component={BlueprintUpperFloor}/>
+        <Route path='/blueprint/lower/:section' component={BlueprintLowerFloorSection}/>
+        <Route path='/blueprint/upper/:section' component={BlueprintUpperFloorSection}/>
       </Switch>
-    </div>
+    </div>;
 
   return template;
 }

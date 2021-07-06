@@ -10,7 +10,7 @@ export function Inventory() {
   const dispatch = useDispatch();
 
   let itemSlots = inventory.itemSlots.map(slot => {
-    return <ItemSlot key={Math.random()} id={slot.id} item={slot.item} selected={slot.selected} focused={slot.focused}/>;
+    return <ItemSlot key={slot.id} id={slot.id} item={slot.item} selected={slot.selected} focused={slot.focused}/>;
   });
 
   function toggleSelectedOnItemSlot(itemSlot) {

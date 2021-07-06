@@ -46,12 +46,11 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  PICK_UP_ITEM: (interactedItems: IItem[], existingItems: IExistingItems) => {
+  PICK_UP_ITEM: (interactedItemIds: number[]) => {
     return {
       type: ITEM_ACTIONS.ENUMS.PICK_UP_ITEM,
       payload: {
-        interactedItems,
-        existingItems
+        interactedItemIds
       }
     };
   },

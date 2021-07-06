@@ -2,7 +2,7 @@ import { ACTIONS } from '../redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { IItemSlot } from 'Types/itemSlot';
 
-function ItemSlot(props) {
+const ItemSlot = (props) => {
   let dispatch = useDispatch();
   function getClassName() {
     let className = 'inventory-slot ' + props?.id ?? '';
@@ -39,11 +39,8 @@ function ItemSlot(props) {
   return(
     <div onClick={focusItemSlot} key={props?.id} className={getClassName()}><img src={getImage()}/></div>
   );
-}
+};
 
-export default React.memo((props: IItemSlot) => {
-  return <ItemSlot key={Math.random()} id={props.id} selected={props.selected} item={props.item} focused={props.focused}/>;
-}, (prevProps, nextProps) => {
-  console.log(prevProps, nextProps);
-  return prevProps.selected !== nextProps.selected || prevProps.focused !== nextProps.focused || prevProps.item?.id !== nextProps.item?.id;
+export default React.memo(ItemSlot, (prevProps, nextProps) => {
+  return prevProps.selected === nextProps.selected && prevProps.focused === nextProps.focused && prevProps.item?.id === nextProps.item?.id;
 });

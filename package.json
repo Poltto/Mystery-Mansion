@@ -55,7 +55,7 @@
     "eslint": "^7.14.0",
     "inputmask": "^4.0.8",
     "jquery": "^3.2.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "morgan": "^1.10.0",
     "ng-dialog": "^1.4.0",

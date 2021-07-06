@@ -2,6 +2,9 @@ import { ACTIONS } from '../redux/actions';
 import { IPoint } from 'Types/point';
 import { IExistingItems } from 'Types/existingItems';
 import { IItemSlot } from 'Types/itemSlot';
+import { IItemState } from 'Types/itemState';
+import { IItem } from 'Types/item';
+let cloneDeep = require('lodash/cloneDeep');
 let itemSlots: IItemSlot[] = [];
 
 for(let i = 0; i < 36; i++) {
@@ -9,7 +12,7 @@ for(let i = 0; i < 36; i++) {
 }
 
 
-export function ItemReducer(state = {items: {}, inventory: {isOpen: false, itemSlots: itemSlots}}, action) {
+export function ItemReducer(state: IItemState = {items: {}, inventory: {isOpen: false, itemSlots: itemSlots}}, action) {
   if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.OPEN) {
     return {
       ...state,
@@ -52,14 +55,15 @@ export function ItemReducer(state = {items: {}, inventory: {isOpen: false, itemS
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.PICK_UP_ITEM) {
     let firstAvailableSlotIndex = state.inventory.itemSlots.findIndex(slot => !slot.item);
     let availableItemSlots = state.inventory.itemSlots.filter(slot => !slot.item);
-    let newSlots = state.inventory.itemSlots;
-    let interactedItems = action.payload.interactedItems;
-    let existingItems = {...state.items};
-    if (firstAvailableSlotIndex > -1 && availableItemSlots.length >= interactedItems.length) {
+    let newSlots = cloneDeep(state.inventory.itemSlots);
+    let interactedItemIds = action.payload.interactedItemIds;
+    let existingItems: IExistingItems = cloneDeep(state.items);
+    if (firstAvailableSlotIndex > -1 && availableItemSlots.length >= interactedItemIds.length) {
       let newItemIndex = 0;
-      for (let j = firstAvailableSlotIndex; j < (firstAvailableSlotIndex + interactedItems.length); j++) {
-        newSlots[j].item = interactedItems[newItemIndex];
-        existingItems[interactedItems[newItemIndex].id].isInInventory = true;
+      for (let j = firstAvailableSlotIndex; j < (firstAvailableSlotIndex + interactedItemIds.length); j++) {
+        let item = Object.values(existingItems).find(existingItem => existingItem.id === interactedItemIds[newItemIndex]);
+        newSlots[j].item = item;
+        item.isInInventory = true;
         newItemIndex++;
       }
     }
@@ -73,9 +77,7 @@ export function ItemReducer(state = {items: {}, inventory: {isOpen: false, itemS
       }
     };
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.FOCUS_ITEM_SLOT) {
-    let newInventory = {
-      ...state.inventory
-    };
+    let newInventory = cloneDeep(state.inventory);
     let indexOfOldFocus = newInventory.itemSlots.findIndex(slot => slot.focused);
     let indexOfNewFocus = newInventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
     if(indexOfOldFocus > -1) {
@@ -90,9 +92,7 @@ export function ItemReducer(state = {items: {}, inventory: {isOpen: false, itemS
       inventory: newInventory
     };
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE_SELECTED_ON_ITEM_SLOT) {
-    let newInventory = {
-      ...state.inventory
-    };
+    let newInventory = cloneDeep(state.inventory);
     let index = newInventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
     if(index > -1) {
       newInventory.itemSlots[index].selected = !newInventory.itemSlots[index].selected;

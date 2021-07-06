@@ -5,13 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { OBSTACLE_CREATOR_TYPES, OBSTACLE_TEXTURES } from 'Types/obstacleTypes';
 import { IItem } from 'Types/item';
 import { ItemCreator } from './item-creator/itemCreator';
-import { IExistingItems } from 'Types/existingItems';
 
 export function App() {
   const dispatch = useDispatch();
-  const existingItems: IExistingItems = useSelector(state => {
-    return state.ItemReducer.items;
-  });
 
   window.addEventListener('keydown', function(e) {
     // space and arrow keys
@@ -27,7 +23,7 @@ export function App() {
       isInInventory: false,
       onInteract: (interactedItems: IItem[]) => {
         console.log(interactedItems);
-        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems, existingItems);
+        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems.map(item => item.id));
         dispatch(action);
       },
       position: {
@@ -41,8 +37,7 @@ export function App() {
       name: 'Second Item',
       isInInventory: false,
       onInteract: (interactedItems: IItem[]) => {
-        console.log(interactedItems);
-        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems, existingItems);
+        let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems.map(item => item.id));
         dispatch(action);
       },
       position: {

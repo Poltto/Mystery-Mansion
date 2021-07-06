@@ -21,15 +21,15 @@ export function BlueprintLowerFloorSection({match}) {
     bathroom: BlueprintLowerFloorSectionBathroom,
     hallway: BlueprintLowerFloorSectionHallway,
     entrance: BlueprintLowerFloorSectionEntrance,
-  }
+  };
   let sectionComponent = SECTIONS[section];
   let template =
-    <div className="blueprint-lower-section-container">
+    <div className='blueprint-lower-section-container'>
       {createComponent(sectionComponent)}
 
-      <Link className="back-button" to="/blueprint/lower">Go back</Link>
+      <Link className='back-button' to='/blueprint/lower'>Go back</Link>
 
-    </div>
+    </div>;
 
   function createComponent(component) {
     return React.createElement(component);

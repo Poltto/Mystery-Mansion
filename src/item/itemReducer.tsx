@@ -4,15 +4,16 @@ import { IExistingItems } from 'Types/existingItems';
 import { IItemSlot } from 'Types/itemSlot';
 import { IItemState } from 'Types/itemState';
 import { IItem } from 'Types/item';
+import { ICombination } from 'Types/combination';
 let cloneDeep = require('lodash/cloneDeep');
-let itemSlots: IItemSlot[] = [];
+let initialItemSlots: IItemSlot[] = [];
 
 for(let i = 0; i < 36; i++) {
-  itemSlots.push({id: i, item: null, selected: false, focused: false});
+  initialItemSlots.push({id: i, item: null, selected: false, focused: false});
 }
 
 
-export function ItemReducer(state: IItemState = {items: {}, inventory: {isOpen: false, itemSlots: itemSlots}}, action) {
+export function ItemReducer(state: IItemState = {items: {}, inventory: {isOpen: false, itemSlots: initialItemSlots}}, action) {
   if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.OPEN) {
     return {
       ...state,
@@ -101,7 +102,37 @@ export function ItemReducer(state: IItemState = {items: {}, inventory: {isOpen: 
       ...state,
       inventory: newInventory
     };
+  } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.COMBINE) {
+    let combination: ICombination = action.payload.combination;
+    let inventory = cloneDeep(state.inventory);
+    let items = cloneDeep(state.items);
+    let itemSlotsUsed = inventory.itemSlots.filter(itemSlot => {
+      return combination.itemIds.includes(itemSlot.item?.id);
+    });
+    itemSlotsUsed.forEach(itemSlot => {
+      itemSlot.item.isInInventory = false;
+      itemSlot.item = null;
+      itemSlot.selected = false;
+      itemSlot.focused = false;
+    });
+    let firstAvailableSlotIndex = inventory.itemSlots.findIndex(slot => !slot.item);
+    if(firstAvailableSlotIndex > -1) {
+      inventory.itemSlots[firstAvailableSlotIndex].item = items[combination.result.id];
+    }
+    items[combination.result.id].isInInventory = true;
+
+    return {
+      ...state,
+      inventory,
+      items
+    };
+
   } else {
     return state;
+  }
+
+
+  function putItemInFirstAvailableItemSlot(item: IItem, itemSlots: IItemSlot[]) {
+
   }
 }

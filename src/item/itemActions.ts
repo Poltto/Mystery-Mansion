@@ -1,5 +1,6 @@
 import { IItem } from 'Types/item';
 import { IExistingItems } from 'Types/existingItems';
+import { ICombination } from 'Types/combination';
 
 export const ITEM_ACTIONS = {
 
@@ -11,7 +12,17 @@ export const ITEM_ACTIONS = {
     TOGGLE: 'TOGGLE',
     PICK_UP_ITEM: 'PICK_UP_ITEM',
     FOCUS_ITEM_SLOT: 'FOCUS_ITEM_SLOT',
-    TOGGLE_SELECTED_ON_ITEM_SLOT: 'TOGGLE_SELECTED_ON_ITEM_SLOT'
+    TOGGLE_SELECTED_ON_ITEM_SLOT: 'TOGGLE_SELECTED_ON_ITEM_SLOT',
+    COMBINE: 'COMBINE'
+  },
+
+  COMBINE: (combination: ICombination) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.COMBINE,
+      payload: {
+        combination
+      }
+    };
   },
 
   TOGGLE_SELECTED_ON_ITEM_SLOT: (itemSlot) => {

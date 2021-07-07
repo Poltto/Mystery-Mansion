@@ -37,7 +37,9 @@ const ItemSlot = (props) => {
   }
 
   return(
-    <div onClick={focusItemSlot} key={props?.id} className={getClassName()}><img src={getImage()}/></div>
+    <div onClick={focusItemSlot} key={props?.id} className={getClassName()}>
+      {props?.item?.image ? <img src={getImage()}/> : ''}
+    </div>
   );
 };
 

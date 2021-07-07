@@ -22,7 +22,6 @@ export function App() {
       name: 'First Item',
       isInInventory: false,
       onInteract: (interactedItems: IItem[]) => {
-        console.log(interactedItems);
         let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems.map(item => item.id));
         dispatch(action);
       },
@@ -45,6 +44,19 @@ export function App() {
         y: 3
       },
       image: '/images/grandma_walking_down_1.png'
+    },
+    {
+      id: 3,
+      name: 'Third item',
+      isInInventory: false,
+      onInteract: (interactedItems: IItem[]) => {
+        return;
+      },
+      position: {
+        x: 9999,
+        y: 9999
+      },
+      image: '/images/grandma_walking_left_1.png'
     }
   ];
 

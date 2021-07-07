@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
-import * as _ from 'lodash';
 
 export function Character() {
   const characterPosition = useSelector(state => {

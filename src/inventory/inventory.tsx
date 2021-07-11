@@ -12,7 +12,7 @@ export function Inventory() {
   const dispatch = useDispatch();
 
   let itemSlots = inventory.itemSlots.map(slot => {
-    return <ItemSlot key={slot.id} id={slot.id} item={slot.item} selected={slot.selected} focused={slot.focused}/>;
+    return <ItemSlot key={slot.id} id={slot.id} inventoryItem={slot.inventoryItem} selected={slot.selected} focused={slot.focused}/>;
   });
 
   function toggleSelectedOnItemSlot(itemSlot) {
@@ -23,7 +23,7 @@ export function Inventory() {
 
   function combine() {
     let selectedItemSlots = inventory.itemSlots.filter(itemSlot => {
-      return itemSlot.selected && itemSlot.item?.id;
+      return itemSlot.selected && itemSlot.inventoryItem?.item?.id;
     });
 
     let foundCombination: ICombination = itemCombiner.getCombination(selectedItemSlots);

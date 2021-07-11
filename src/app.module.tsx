@@ -10,15 +10,21 @@ import * as React from 'react';
 import { ClickListener } from './click-listener/clickListener';
 import { Dialog } from './dialog/dialog';
 import { Inventory } from './inventory/inventory';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <ClickListener/>
-      <Dialog/>
-      <Inventory/>
-      <App/>
-    </BrowserRouter>
-  </Provider>,
+  <DndProvider options={{enableMouseEvents: true}} backend={HTML5Backend}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ClickListener/>
+        <Dialog/>
+        <Inventory/>
+
+        <App/>
+      </BrowserRouter>
+    </Provider>
+  </DndProvider>,
+
   document.getElementById('root'));
 

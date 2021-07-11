@@ -12,3 +12,28 @@
     object-fit: contain;
   }
 }
+
+.inventory-item {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.is-dragging {
+    opacity: 0.5;
+    background: transparent;
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+}

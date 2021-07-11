@@ -20,7 +20,7 @@ export class ItemCombiner {
   }
 
   public getCombination(itemSlots: IItemSlot[]): ICombination {
-    let itemIds = itemSlots.map(itemSlot => itemSlot.item?.id);
+    let itemIds = itemSlots.map(itemSlot => itemSlot.inventoryItem?.item?.id);
     let sortedIds = sortBy(itemIds, id => id);
     let foundCombination: ICombination = this.ITEM_COMBINATIONS.find(singleCombination => {
       let sortedIdsOfCombination = sortBy(singleCombination.itemIds, id => id);

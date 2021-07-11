@@ -1,19 +1,33 @@
 import { IItem } from 'Types/item';
 import { IExistingItems } from 'Types/existingItems';
 import { ICombination } from 'Types/combination';
+import { IInventoryItem } from 'Types/inventoryItem';
 
 export const ITEM_ACTIONS = {
 
   ENUMS: {
     SET_POSITION: 'SET_POSITION',
     ADD_ITEM: 'ADD_ITEM',
+    REMOVE_ITEM: 'REMOVE_ITEM',
+    ADD_INVENTORY_ITEM: 'ADD_INVENTORY_ITEM',
+    REMOVE_INVENTORY_ITEM: 'REMOVE_INVENTORY_ITEM',
     OPEN: 'OPEN',
     CLOSE: 'CLOSE',
     TOGGLE: 'TOGGLE',
     PICK_UP_ITEM: 'PICK_UP_ITEM',
     FOCUS_ITEM_SLOT: 'FOCUS_ITEM_SLOT',
     TOGGLE_SELECTED_ON_ITEM_SLOT: 'TOGGLE_SELECTED_ON_ITEM_SLOT',
-    COMBINE: 'COMBINE'
+    COMBINE: 'COMBINE',
+    CHANGE_ITEM_SLOT: 'CHANGE_ITEM_SLOT'
+  },
+  CHANGE_ITEM_SLOT: (targetId: number, inventoryItem: IInventoryItem) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.CHANGE_ITEM_SLOT,
+      payload: {
+        targetId,
+        inventoryItem
+      }
+    };
   },
 
   COMBINE: (combination: ICombination) => {
@@ -54,6 +68,27 @@ export const ITEM_ACTIONS = {
     return {
       type: ITEM_ACTIONS.ENUMS.ADD_ITEM,
       payload: item
+    };
+  },
+
+  REMOVE_ITEM: (item) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.REMOVE_ITEM,
+      payload: item
+    };
+  },
+
+  ADD_INVENTORY_ITEM: (inventoryItem) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.ADD_INVENTORY_ITEM,
+      payload: inventoryItem
+    };
+  },
+
+  REMOVE_INVENTORY_ITEM: (inventoryItem) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.REMOVE_INVENTORY_ITEM,
+      payload: inventoryItem
     };
   },
 

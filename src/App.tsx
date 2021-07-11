@@ -110,13 +110,13 @@ export function App() {
       image: OBSTACLE_TEXTURES.WALL_1,
       points: [{x: 10, y: 2}, {x: 20, y: 2}, {x: 20, y: 8}, {x: 10, y: 8}],
       specialPoints: [{x: 15, y: 8, image: OBSTACLE_TEXTURES.WOOD_FLOOR_1, isBlocking: false}]
-
     }
   ];
   let obstacleElements = ObstacleCreator({groups: pointGroups});
   let itemElements = ItemCreator({items: items});
   return (
     <div className='main-container'>
+
       <Character/>
       {obstacleElements}
       {itemElements}

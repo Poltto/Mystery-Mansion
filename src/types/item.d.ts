@@ -8,4 +8,5 @@ export interface IItem {
   };
   id: number;
   onInteract?: (allItems: IItem[]) => any;
+  itemSlotId?: number;
 }

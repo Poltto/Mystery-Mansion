@@ -68,7 +68,6 @@ export function Item(props) {
 
   return (
     <div style={getStyle()} className='item'>
-      <pre>{item?.name}</pre>
       <img src={getImage()}/>
     </div>
   );

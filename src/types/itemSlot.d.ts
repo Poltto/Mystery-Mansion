@@ -1,8 +1,8 @@
-import { IItem } from 'Types/item';
+import { IInventoryItem } from 'Types/inventoryItem';
 
 export interface IItemSlot {
   id: number;
-  item: IItem;
+  inventoryItem: IInventoryItem;
   selected: boolean;
   focused: boolean;
 }

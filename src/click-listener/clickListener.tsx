@@ -94,9 +94,9 @@ export function ClickListener() {
       return it.position.x === targetPosition.x && it.position.y === targetPosition.y;
     });
     if(interactedObstacle?.onInteract) {
-      interactedObstacle.onInteract();
+      dispatch(interactedObstacle.onInteract());
     } else if(interactedItem?.onInteract) {
-      interactedItem.onInteract([interactedItem]);
+      dispatch(interactedItem.onInteract([interactedItem]));
     }
   }
 
@@ -130,7 +130,8 @@ export function ClickListener() {
       type,
       payload: {
         keycode: characterRef.current.keysDown[characterRef.current.keysDown.length - 1],
-        state: currentState
+        state: currentState,
+        characterPosition
       }
     };
     dispatch(action);

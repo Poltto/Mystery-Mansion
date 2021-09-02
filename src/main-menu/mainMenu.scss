@@ -1,0 +1,16 @@
+.main-menu-container {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+
+  .main-menu-wrapper {
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+}

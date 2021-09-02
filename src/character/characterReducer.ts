@@ -20,7 +20,7 @@ export function CharacterReducer(state = initialState, action) {
   if(action?.type === ACTIONS.APP_ACTIONS.KEYDOWN && Object.keys(keyCodes).map(code => parseInt(code, 10))?.includes(action?.payload?.keycode)) {
     return keyCodes[action.payload.keycode]();
   } else {
-    return state;
+    return {...state};
   }
 
   function onMovement(direction: string) {

@@ -20,6 +20,7 @@
       "Types/*": ["src/types/*"]
     },
     "types": [
+      "node",
       "react",
       "react-dom",
       "lodash",

@@ -92,11 +92,12 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  PICK_UP_ITEM: (interactedItemIds: number[]) => {
+  PICK_UP_ITEM: (interactedItems: IItem[]) => {
+    let itemsNotInInventory = interactedItems.filter(item => !item.isInInventory).map(item => item.id);
     return {
       type: ITEM_ACTIONS.ENUMS.PICK_UP_ITEM,
       payload: {
-        interactedItemIds
+        interactedItemIds: itemsNotInInventory
       }
     };
   },

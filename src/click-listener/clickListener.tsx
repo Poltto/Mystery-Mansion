@@ -12,6 +12,7 @@ export function ClickListener() {
 
   const dispatch = useDispatch();
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
+
   const obstacles: IObstacle[] = useSelector(state => {
     return state.ObstacleReducer.obstacles;
   });
@@ -22,11 +23,14 @@ export function ClickListener() {
     return state.CharacterReducer.characterDirection;
   });
   const characterPosition = useSelector(state => {
+    clearInterval(interval);
     return state.CharacterReducer.characterPosition;
   });
 
+  let interval;
+
   useEffect(() => {
-    setInterval(() => {
+    interval = setInterval(() => {
       if(characterRef.current.keysDown.length) {
         if(new Date().getTime() - characterRef.current.lastMovement.getTime() < 290) {
           return;
@@ -35,12 +39,12 @@ export function ClickListener() {
         doDispatch('keydown');
       }
     }, 20);
-  }, []);
+  }, [characterPosition]);
 
   useEventListener('dblclick', (event) => {
     let path = event.path;
     let targetInventorySlot = path.find(element => {
-      return element.className.includes('inventory-slot');
+      return element?.className?.includes('inventory-slot');
     });
     if(targetInventorySlot) {
       // let action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT();
@@ -72,13 +76,13 @@ export function ClickListener() {
   });
 
   useEventListener('keyup', (event) => {
+
     let index = characterRef.current.keysDown.findIndex(item => {
       return item === event.keyCode;
     });
     if(index > -1) {
       characterRef.current.keysDown.splice(index, 1);
     }
-    doDispatch(ACTIONS.APP_ACTIONS.KEYUP);
   });
 
   function onToggleInventory() {

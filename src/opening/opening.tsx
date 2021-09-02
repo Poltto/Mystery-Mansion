@@ -12,7 +12,7 @@ export function Opening() {
 
   function goForward(event) {
     if((index + 1) >= openingTexts.length) {
-      history.push('/blueprint');
+      history.push('/main');
     } else {
       setIndex(index + 1);
     }

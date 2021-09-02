@@ -8,7 +8,7 @@ export const ITEMS: IItem[] = [
     name: 'First Item',
     isInInventory: false,
     onInteract: (interactedItems: IItem[]) => {
-      let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems.map(item => item.id));
+      let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems);
       return action;
     },
     position: {
@@ -22,7 +22,7 @@ export const ITEMS: IItem[] = [
     name: 'Second Item',
     isInInventory: false,
     onInteract: (interactedItems: IItem[]) => {
-      let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems.map(item => item.id));
+      let action = ACTIONS.ITEM_ACTIONS.PICK_UP_ITEM(interactedItems);
       return action;
     },
     position: {

@@ -1,11 +1,14 @@
-import { ACTIONS } from './redux/actions';
-import { ObstacleCreator } from './obstacle-creator/obstacleCreator';
-import { Character } from './character/character';
 import { useDispatch, useSelector } from 'react-redux';
-import { OBSTACLE_CREATOR_TYPES, OBSTACLE_TEXTURES } from 'Types/obstacleTypes';
-import { IItem } from 'Types/item';
-import { ItemCreator } from './item-creator/itemCreator';
-import { ITEMS, POINT_GROUPS } from './helpers/gameObjects';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
+
+import { Opening } from './opening/opening';
+import { MainGame } from './main-game/mainGame';
+import { MainMenu } from './main-menu/mainMenu';
 
 export function App() {
   const dispatch = useDispatch();
@@ -17,20 +20,15 @@ export function App() {
     }
   }, false);
 
-  let obstacleElements = ObstacleCreator({groups: POINT_GROUPS});
-  let itemElements = ItemCreator({items: ITEMS});
+
   return (
-    <div className='main-container'>
-      <Character/>
-      {obstacleElements}
-      {itemElements}
-    </div>
-    // <Router>
-    //   <Switch>
-    //     <Route exact path="/" component={Opening}/>
-    //     <Route path="/blueprint" component={Blueprint}/>
-    //   </Switch>
-    // </Router>
+    <Router>
+      <Switch>
+        <Route exact={true} path='/' component={MainMenu}/>
+        <Route exact={true} path='/opening' component={Opening}/>
+        <Route path='/main' component={MainGame}/>
+      </Switch>
+    </Router>
   );
 
   function generateGrid() {

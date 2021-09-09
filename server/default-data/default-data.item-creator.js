@@ -3,7 +3,7 @@ import { IItem } from 'Types/item';
 import { IItemCreatorOptions } from 'Types/itemCreator';
 import { Item } from '../../src/item/item';
 
-export function DefaultDataItemCreator(options: IItemCreatorOptions) {
+export function DefaultDataItemCreator(options) {
   function createItems() {
     let reducer = (accumulator, currentValue) => {
       let element = processItem(currentValue);

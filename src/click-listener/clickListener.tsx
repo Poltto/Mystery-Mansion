@@ -11,22 +11,23 @@ import { ITEM_INTERACTIONS } from '../helpers/interactions.items';
 import { INTERACTIONS } from '../helpers/statics.interactions';
 import { Item } from '../endpoints/endpoint.item';
 import { KEYMAP } from '../helpers/statics.keymap';
+import {RootState} from "../redux/reducers";
 
 export function ClickListener() {
 
   const dispatch = useDispatch();
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
 
-  const obstacles: IObstacle[] = useSelector(state => {
+  const obstacles: IObstacle[] = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles;
   });
-  const items: IItemElement[] = useSelector(state => {
+  const items: IItemElement[] = useSelector((state: RootState) => {
     return state.ItemReducer.items;
   });
-  const characterDirection = useSelector(state => {
+  const characterDirection = useSelector((state: RootState) => {
     return state.CharacterReducer.characterDirection;
   });
-  const characterPosition = useSelector(state => {
+  const characterPosition = useSelector((state: RootState) => {
     clearInterval(interval);
     return state.CharacterReducer.characterPosition;
   });

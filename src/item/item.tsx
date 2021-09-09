@@ -1,9 +1,10 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { ACTIONS } from '../redux/actions';
+import {RootState} from "../redux/reducers";
 
 export function Item(props) {
-  const item = useSelector(state => {
+  const item = useSelector((state: RootState) => {
     return state.ItemReducer.items[props.id];
   }, comparisonFunction);
 

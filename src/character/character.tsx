@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
+import {RootState} from "../redux/reducers";
 
 export function Character() {
-  const characterPosition = useSelector(state => {
+  const characterPosition = useSelector((state: RootState) => {
     return state.CharacterReducer.characterPosition;
   });
-  const characterDirection = useSelector(state => {
+  const characterDirection = useSelector((state: RootState) => {
     return state.CharacterReducer.characterDirection;
   });
 

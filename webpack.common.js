@@ -2,7 +2,6 @@ const path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   entry: {
     app: './src/app.module.tsx',
@@ -43,10 +42,7 @@ module.exports = {
       chunks: ['vendor', 'app'],
       filename: 'index.html',
       template: 'index.html'
-    }),
-    new MiniCssExtractPlugin({
-      filename: '[name].[hash].bundle.css'
-    }),
+    })
   ],
   module: {
     rules: [{
@@ -68,9 +64,6 @@ module.exports = {
       {
         test: /\.(sa|sc)ss$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          },
           'css-loader',
           'sass-loader'
         ],
@@ -78,19 +71,31 @@ module.exports = {
       {
         test: /\.(png|jpeg|jpg|gif|svg)$/,
         // include: path.join(__dirname, 'src/assets/images/'),
-        use: 'file-loader?name=images/[name].[ext]&context=src/assets/images/'
+        loader: 'file-loader',
+        options: {
+          outputPath: 'images/[name].[ext]',
+          publicPath: 'images',
+          context: 'src/assets/images'
+        }
       }, {
         test: /\.(woff|woff2|eot|ttf)(\?.+)?$/i,
-        use: 'file-loader?name=fonts/[name].[ext]'
+        loader: 'file-loader',
+        options: {
+          outputPath: 'fonts/[name].[ext]',
+          publicPath: 'fonts/[name].[ext]',
+          context: 'src/assets/fonts'
+        }
       }]
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
-      Types: path.resolve(__dirname, 'src/types/')
+      Types: path.resolve(__dirname, 'src/types/'),
+      'images': path.resolve(__dirname, 'src/assets/images'),
+      'fonts': path.resolve(__dirname, 'src/assets/fonts')
+    },
+    fallback: {
+      fs: false
     }
-  },
-  node: {
-    fs: 'empty'
-  },
+  }
 };

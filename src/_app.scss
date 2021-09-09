@@ -4,7 +4,6 @@ $square: calc(#{$height} / 50);
 
 
 @import './variables';
-@import './blueprint/blueprint';
 @import './opening/opening';
 @import './character/character';
 @import './square/square.style';
@@ -18,18 +17,18 @@ $square: calc(#{$height} / 50);
 
 @font-face {
   font-family: 'Medieval';
-  src: url('/fonts/GoudyMedievalRegular.ttf');
+  src: url('~fonts/GoudyMedievalRegular.ttf');
 }
 
 @font-face {
   font-family: 'Medieval';
-  src: url('/fonts/GoudyMedievalBold.ttf');
+  src: url('~fonts/GoudyMedievalBold.ttf');
   font-weight: bold;
 }
 
 @font-face {
   font-family: 'Chancery';
-  src: url('/fonts/chancery.ttf');
+  src: url('~fonts/chancery.ttf');
 }
 
 .main-container {

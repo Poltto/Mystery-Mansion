@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEventListener } from '../use-event-listener';
 import { useEffect } from 'react';
 import { ACTIONS } from '../redux/actions';
+import {RootState} from "../redux/reducers";
 
 export function Obstacle(props) {
-  const obstacle = useSelector(state => {
+  const obstacle = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles[props.id];
   });
   const dispatch = useDispatch();

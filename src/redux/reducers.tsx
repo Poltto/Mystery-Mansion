@@ -12,3 +12,5 @@ export const REDUCERS = combineReducers({
   DialogReducer,
   ItemReducer
 });
+
+export type RootState = ReturnType<typeof REDUCERS>;

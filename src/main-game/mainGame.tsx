@@ -6,16 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../redux/actions';
 import { useEffect } from 'react';
 import { Item } from '../endpoints/endpoint.item';
+import {RootState} from "../redux/reducers";
 let GAME_OBJECTS = require('../helpers/game-objects.ts');
 
 export function MainGame(props) {
   const dispatch = useDispatch();
 
-  const obstacles = useSelector(state => {
+  const obstacles = useSelector((state: RootState) => {
     return Object.values(state.ObstacleReducer.obstacles);
   });
 
-  const items = useSelector(state => {
+  const items = useSelector((state: RootState) => {
     return Object.values(state.ItemReducer.items);
   });
 

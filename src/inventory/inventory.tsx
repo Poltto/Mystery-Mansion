@@ -4,9 +4,10 @@ import { Obstacle } from '../obstacle/obstacle';
 import ItemSlot from '../itemSlot/itemSlot';
 import { ItemCombiner } from '../item-combiner/itemCombiner';
 import { ICombination } from 'Types/combination';
+import {RootState} from "../redux/reducers";
 export function Inventory() {
   let itemCombiner = new ItemCombiner();
-  const inventory = useSelector(state => {
+  const inventory = useSelector((state: RootState) => {
     return state.ItemReducer.inventory;
   });
   const dispatch = useDispatch();

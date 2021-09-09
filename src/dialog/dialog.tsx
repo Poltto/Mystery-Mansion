@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../redux/actions';
+import {RootState} from "../redux/reducers";
 
 
 
 export function Dialog() {
-  const dialog = useSelector(state => {
+  const dialog = useSelector((state: RootState) => {
     return state.DialogReducer.dialog;
   });
 

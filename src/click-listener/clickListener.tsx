@@ -6,7 +6,11 @@ import { store } from '../redux/store';
 import { IPoint } from 'Types/point';
 import { IObstacle } from 'Types/obstacle';
 import { useSelector } from 'react-redux';
-import { IItem } from 'Types/item';
+import { IItem, IItemElement } from 'Types/item';
+import { ITEM_INTERACTIONS } from '../helpers/interactions.items';
+import { INTERACTIONS } from '../helpers/statics.interactions';
+import { Item } from '../endpoints/endpoint.item';
+import { KEYMAP } from '../helpers/statics.keymap';
 
 export function ClickListener() {
 
@@ -16,7 +20,7 @@ export function ClickListener() {
   const obstacles: IObstacle[] = useSelector(state => {
     return state.ObstacleReducer.obstacles;
   });
-  const items: IItem[] = useSelector(state => {
+  const items: IItemElement[] = useSelector(state => {
     return state.ItemReducer.items;
   });
   const characterDirection = useSelector(state => {
@@ -49,13 +53,12 @@ export function ClickListener() {
     if(targetInventorySlot) {
       // let action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT();
     }
-    console.log(event);
   });
 
   useEventListener('keydown', (event) => {
-    if(event.keyCode === 81) {
+    if(event.keyCode === KEYMAP.INTERACT) {
       onSimpleInteract();
-    } else if (event.keyCode === 73) {
+    } else if (event.keyCode === KEYMAP.INVENTORY) {
       onToggleInventory();
     } else {
       let index = characterRef.current.keysDown.findIndex(item => item === event.keyCode);
@@ -91,39 +94,50 @@ export function ClickListener() {
 
   function onSimpleInteract() {
     let targetPosition: IPoint = returnPositionInDirection(characterPosition, characterDirection, 1);
-    let interactedObstacle = Object.values(obstacles).find((it) => {
-      return it.position.x === targetPosition.x && it.position.y === targetPosition.y && it.onInteract;
+    // let interactedObstacle = Object.values(obstacles).find((it) => {
+    //   return it.id === targetPositionX && it.position.y === targetPosition.y && it.onInteract;
+    // });
+    let key = targetPosition.positionX?.toString() + targetPosition.positionY?.toString();
+    let interactedObstacle = obstacles[key];
+    let interactedItem: IItemElement = Object.values(items).find(it => {
+      return it.props.positionX === targetPosition.positionX && it.props.positionY === targetPosition.positionY;
     });
-    let interactedItem = Object.values(items).find(it => {
-      return it.position.x === targetPosition.x && it.position.y === targetPosition.y;
-    });
-    if(interactedObstacle?.onInteract) {
+    if(interactedObstacle?.props.onInteract) {
       dispatch(interactedObstacle.onInteract());
-    } else if(interactedItem?.onInteract) {
-      dispatch(interactedItem.onInteract([interactedItem]));
+    } else if(interactedItem?.props.onInteract) {
+      if(interactedItem.props.onInteract === INTERACTIONS.PICK_UP_ITEM) {
+        Item.pickUpItem({itemId: interactedItem.props.id}).then((result) => {
+          console.log("Success", result);
+        }, (error) => {
+          console.log("Error", error);
+        });
+      }
+      console.log(ITEM_INTERACTIONS, interactedItem);
+      dispatch(ITEM_INTERACTIONS[interactedItem.props.onInteract]([interactedItem]));
     }
   }
 
   function returnPositionInDirection(position: IPoint, direction: string, times: number = 1) {
+    console.log(position, direction, times);
     if(direction === 'up') {
       return {
-        x: position.x,
-        y: position.y - times
+        positionX: position.positionX,
+        positionY: position.positionY - times
       };
     } else if (direction === 'right') {
       return {
-        x: position.x + times,
-        y: position.y
+        positionX: position.positionX + times,
+        positionY: position.positionY
       };
     } else if (direction === 'left') {
       return {
-        x: position.x - times,
-        y: position.y
+        positionX: position.positionX - times,
+        positionY: position.positionY
       };
     } else if (direction === 'down') {
       return {
-        x: position.x,
-        y: position.y + times
+        positionX: position.positionX,
+        positionY: position.positionY + times
       };
     }
   }

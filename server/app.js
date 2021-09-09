@@ -5,20 +5,32 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mysql = require('mysql');
 const { Sequelize } = require('sequelize');
-const DefaultDataInits = require('./default-data/default-data.ts');
-var app = express();
+const DefaultDataInits = require('./default-data/default-data.js');
 
+var bodyParser = require('body-parser')
+var jsonParser = bodyParser.json()
+var urlencodedParser = bodyParser.urlencoded({ extended: true })
+const initModelsAndData = require('./default-data/default-data.js');
+var app = express();
 require('./routes/routes.game-object.ts')(app);
+require('./routes/routes.item.ts')(app);
+const sequelize = new Sequelize('game', 'root', '', {
+  host: 'localhost',
+  dialect: 'mysql',
+  dialectOptions: {
+  }
+});
+
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.get('/api/gameObject', (req, res) => {
-  console.log("testtest");
   return res.send('Received a GET HTTP method');
 });
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(urlencodedParser);
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,7 +50,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 app.get('/*', function(req, res) {
-  console.log('test', req, res);
   res.sendFile(path.join(__dirname, 'index.html'), function(err) {
     if (err) {
       res.status(500).send(err)
@@ -53,13 +64,6 @@ var connection = mysql.createConnection({
   database: 'game'
 })
 
-const sequelize = new Sequelize('game', 'root', '', {
-  host: 'localhost',
-  dialect: 'mysql',
-  dialectOptions: {
-
-  }
-});
 
 
 
@@ -70,8 +74,9 @@ connection.connect(error => {
     try {
       sequelize.authenticate().then(async () => {
         try {
-          await sequelize.sync({alter: true});
-          await DefaultDataInits.GameObject(sequelize);
+          initModelsAndData.initModels(sequelize);
+          await sequelize.sync({force: true});
+          initModelsAndData.initData();
         } catch(error) {
           console.log(error);
         }

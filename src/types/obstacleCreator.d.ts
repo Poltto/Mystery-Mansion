@@ -5,7 +5,7 @@ export interface IObstacleGroup {
   isBlocking: boolean;
   points: IPoint[];
   image: string;
-  onInteract?: () => any;
+  onInteract?: string;
   specialPoints?: IPoint[];
 }
 

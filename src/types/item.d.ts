@@ -2,11 +2,22 @@ export interface IItem {
   name: string;
   image: string;
   isInInventory: boolean;
-  position: {
-    x: number,
-    y: number
-  };
+  positionX: number;
+  positionY: number;
   id: number;
-  onInteract?: (allItems: IItem[]) => any;
+  onInteract?: string;
   itemSlotId?: number;
+}
+
+export interface IItemElement {
+  props: {
+    name: string;
+    image: string;
+    isInInventory: boolean;
+    positionX: number;
+    positionY: number;
+    id: number;
+    onInteract?: string;
+    itemSlotId?: number;
+  };
 }

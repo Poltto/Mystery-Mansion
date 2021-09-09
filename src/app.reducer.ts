@@ -46,16 +46,16 @@ export function AppReducer(state = initialState, action) {
     let squaresFromLeft = centerFromLeft / STATICS.SQUARE;
     let squaresFromTop = centerFromTop / STATICS.SQUARE;
 
-    let shouldScrollLeft = (characterPosition.x + leftOffsetInSquares) < squaresFromLeft && scrollLeft !== 0;
-    let shouldScrollRight = (characterPosition.x + leftOffsetInSquares) > squaresFromLeft;
-    let shouldScrollTop = (characterPosition.y + verticalOffsetInSquares) < squaresFromTop && scrollTop !== 0;
-    let shouldScrollBottom = (characterPosition.y + verticalOffsetInSquares) > squaresFromTop;
+    let shouldScrollLeft = (characterPosition.positionX + leftOffsetInSquares) < squaresFromLeft && scrollLeft !== 0;
+    let shouldScrollRight = (characterPosition.positionX + leftOffsetInSquares) > squaresFromLeft;
+    let shouldScrollTop = (characterPosition.positionY + verticalOffsetInSquares) < squaresFromTop && scrollTop !== 0;
+    let shouldScrollBottom = (characterPosition.positionY + verticalOffsetInSquares) > squaresFromTop;
 
     let horizontalScroll = scrollLeft;
     let verticalScroll = scrollTop;
 
-    let horizontalCenter = characterPosition.x - (screenWidthInSquares / 2) + leftOffsetInSquares;
-    let verticalCenter = characterPosition.y - (screenHeightInSquares / 2) + verticalOffsetInSquares;
+    let horizontalCenter = characterPosition.positionX - (screenWidthInSquares / 2) + leftOffsetInSquares;
+    let verticalCenter = characterPosition.positionY - (screenHeightInSquares / 2) + verticalOffsetInSquares;
 
 
     if(shouldScrollLeft || shouldScrollRight) {
@@ -73,14 +73,6 @@ export function AppReducer(state = initialState, action) {
       scrollTop: y,
       scrollLeft: x
     }, 270, 'linear');
-  }
-
-  function hasTargetPositionObstacle(targetPosition) {
-    let obstacles: IObstacle[] = Object.values(action.payload.obstacles);
-    let hasObstacle = obstacles.find(obstacle => {
-      return obstacle.position.x === targetPosition.x && obstacle.position.y === targetPosition.y;
-    });
-    return hasObstacle && hasObstacle.isBlocking;
   }
 
   function isMovementAction(newAction: any) {

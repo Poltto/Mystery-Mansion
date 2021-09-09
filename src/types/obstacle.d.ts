@@ -1,8 +1,6 @@
 export interface IObstacle {
-  position: {
-    x: number,
-    y: number
-  };
+  positionX: number;
+  positionY: number;
   id: number;
   isBlocking: boolean;
   image: string;

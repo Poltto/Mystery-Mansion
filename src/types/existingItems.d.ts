@@ -1,6 +1,6 @@
-import { IItem } from 'Types/item';
+import { IItemElement } from 'Types/item';
 
 export interface IExistingItems {
-  [x: string]: IItem;
+  [x: string]: IItemElement;
 }
 

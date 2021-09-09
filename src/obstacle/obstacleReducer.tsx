@@ -10,18 +10,19 @@ export function ObstacleReducer(state = {obstacles: {}}, action) {
       ...state,
       obstacles
     };
-  } else if (action.type === ACTIONS.OBSTACLE_ACTIONS.ENUMS.ADD_OBSTACLE) {
-    let existingObstacles = state.obstacles as IObstacle[];
-    existingObstacles[action.payload.id] = action.payload;
+  } else if (action.type === ACTIONS.OBSTACLE_ACTIONS.ENUMS.ADD_OBSTACLES) {
+    let newObstacles = {
+      ...state.obstacles,
+      ...action.payload
+    };
     return {
       ...state,
-      existingObstacles
+      obstacles: newObstacles
     };
   } else if(action.type === ACTIONS.CHARACTER_ACTIONS.ENUMS.INTERACT){
     let existingObstacles = state.obstacles as IObstacle[];
-    let interactedPosition: IPoint = action.payload.position;
     let interactedObstacle = Object.values(existingObstacles).find((it) => {
-      return it.position.x === interactedPosition.x && it.position.y === interactedPosition.y && it.onInteract;
+      return it.positionX === action.payload.positionX && it.positionY === action.payload.positionY && it.onInteract;
     });
     if(interactedObstacle) {
       interactedObstacle.onInteract();

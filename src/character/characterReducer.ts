@@ -3,8 +3,8 @@ import { IObstacle } from 'Types/obstacle';
 import { IPoint } from 'Types/point';
 const initialState = {
   characterPosition: {
-    x: 0,
-    y: 0
+    positionX: 0,
+    positionY: 0
   },
   characterDirection: 'down'
 };
@@ -27,8 +27,8 @@ export function CharacterReducer(state = initialState, action) {
     return () => {
       if(direction === 'up') {
         let targetPosition = {
-          x: state.characterPosition.x,
-          y: state.characterPosition.y - 1
+          positionX: state.characterPosition.positionX,
+          positionY: state.characterPosition.positionY - 1
         };
         if(hasTargetPositionObstacle(targetPosition)) {
           return {...state};
@@ -40,8 +40,8 @@ export function CharacterReducer(state = initialState, action) {
         };
       } else if (direction === 'down') {
         let targetPosition = {
-          x: state.characterPosition.x,
-          y: state.characterPosition.y + 1
+          positionX: state.characterPosition.positionX,
+          positionY: state.characterPosition.positionY + 1
         };
         if(hasTargetPositionObstacle(targetPosition)) {
           return {...state};
@@ -53,8 +53,8 @@ export function CharacterReducer(state = initialState, action) {
         };
       } else if (direction === 'left') {
         let targetPosition = {
-          x: state.characterPosition.x - 1,
-          y: state.characterPosition.y
+          positionX: state.characterPosition.positionX - 1,
+          positionY: state.characterPosition.positionY
         };
         if(hasTargetPositionObstacle(targetPosition)) {
           return {...state};
@@ -67,8 +67,8 @@ export function CharacterReducer(state = initialState, action) {
         };
       } else if (direction === 'right') {
         let targetPosition = {
-          x: state.characterPosition.x + 1,
-          y: state.characterPosition.y
+          positionX: state.characterPosition.positionX + 1,
+          positionY: state.characterPosition.positionY
         };
         if(hasTargetPositionObstacle(targetPosition)) {
           return {...state};
@@ -86,14 +86,12 @@ export function CharacterReducer(state = initialState, action) {
 
   function hasTargetPositionObstacle(targetPosition) {
     let obstacle = getObstacleInTargetPosition(targetPosition);
-    return obstacle && obstacle.isBlocking;
+    return obstacle && obstacle.props.isBlocking;
   }
 
   function getObstacleInTargetPosition(targetPosition) {
-    let obstacles = Object.values(action.payload.state.ObstacleReducer.obstacles) as IObstacle[];
-    let foundObstacle = obstacles.find(obstacle => {
-      return obstacle.position.x === targetPosition.x && obstacle.position.y === targetPosition.y;
-    });
+    let targetKey = targetPosition.positionX?.toString() + targetPosition.positionY?.toString();
+    let foundObstacle = action.payload.state.ObstacleReducer.obstacles[targetKey];
     return foundObstacle;
   }
 }

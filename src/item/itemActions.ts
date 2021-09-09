@@ -1,4 +1,4 @@
-import { IItem } from 'Types/item';
+import { IItem, IItemElement } from 'Types/item';
 import { IExistingItems } from 'Types/existingItems';
 import { ICombination } from 'Types/combination';
 import { IInventoryItem } from 'Types/inventoryItem';
@@ -7,7 +7,7 @@ export const ITEM_ACTIONS = {
 
   ENUMS: {
     SET_POSITION: 'SET_POSITION',
-    ADD_ITEM: 'ADD_ITEM',
+    ADD_ITEMS: 'ADD_ITEMS',
     REMOVE_ITEM: 'REMOVE_ITEM',
     ADD_INVENTORY_ITEM: 'ADD_INVENTORY_ITEM',
     REMOVE_INVENTORY_ITEM: 'REMOVE_INVENTORY_ITEM',
@@ -64,10 +64,10 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  ADD_ITEM: (item) => {
+  ADD_ITEMS: (items) => {
     return {
-      type: ITEM_ACTIONS.ENUMS.ADD_ITEM,
-      payload: item
+      type: ITEM_ACTIONS.ENUMS.ADD_ITEMS,
+      payload: items
     };
   },
 
@@ -92,8 +92,8 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  PICK_UP_ITEM: (interactedItems: IItem[]) => {
-    let itemsNotInInventory = interactedItems.filter(item => !item.isInInventory).map(item => item.id);
+  PICK_UP_ITEM: (interactedItems: IItemElement[]) => {
+    let itemsNotInInventory = interactedItems.filter(item => !item.props.isInInventory).map(item => item.props.id);
     return {
       type: ITEM_ACTIONS.ENUMS.PICK_UP_ITEM,
       payload: {

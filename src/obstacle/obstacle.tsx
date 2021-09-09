@@ -9,25 +9,28 @@ export function Obstacle(props) {
   });
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if(isDirty()) {
-      let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLE({
-        id: props.id,
-        position: props.initialPosition,
-        isBlocking: props.isBlocking,
-        image: props.image,
-        onInteract: props.onInteract
-      });
-      dispatch(action);
-    }
-
-  });
+  // useEffect(() => {
+  //   if(isDirty()) {
+  //     let reactElement = React.createElement(Obstacle,
+  //       {
+  //         id: props.id,
+  //         key: props.key,
+  //         positionX: props.positionX,
+  //         positionY: props.positionY,
+  //         isBlocking: props.isBlocking,
+  //         image: props.image,
+  //         onInteract: props.onInteract
+  //       });
+  //     let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES([reactElement]);
+  //     dispatch(action);
+  //   }
+  // });
 
   function isDirty() {
     if(!obstacle) {
       return true;
     }
-    let comparableFields = ['position.x', 'position.y'];
+    let comparableFields = ['positionX', 'positionY'];
     let hasDirtyField = comparableFields.some(field => {
       return obstacle[field] !== props[field];
     });
@@ -39,19 +42,19 @@ export function Obstacle(props) {
       return {};
     } else {
       let styles = {
-        left: obstacle?.position?.x * 60,
-        top: obstacle?.position?.y * 60
+        left: (obstacle?.props?.positionX ?? 0) * 60,
+        top: (obstacle?.props?.positionY ?? 0) * 60
       };
       return styles;
     }
   }
 
   function getText() {
-    return obstacle?.isBlocking ? 'X' : 'O';
+    return obstacle?.props?.isBlocking ? 'X' : 'O';
   }
 
   function getImage() {
-    return obstacle?.image;
+    return obstacle?.props?.image;
   }
 
   return (

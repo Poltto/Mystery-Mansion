@@ -2,7 +2,7 @@ export const OBSTACLE_ACTIONS = {
 
   ENUMS: {
     SET_POSITION: 'SET_POSITION',
-    ADD_OBSTACLE: 'ADD_OBSTACLE'
+    ADD_OBSTACLES: 'ADD_OBSTACLES'
   },
 
   SET_POSITION: (obstaclePosition) => {
@@ -12,10 +12,10 @@ export const OBSTACLE_ACTIONS = {
     };
   },
 
-  ADD_OBSTACLE: (obstacle) => {
+  ADD_OBSTACLES: (obstacles) => {
     return {
-      type: OBSTACLE_ACTIONS.ENUMS.ADD_OBSTACLE,
-      payload: obstacle
+      type: OBSTACLE_ACTIONS.ENUMS.ADD_OBSTACLES,
+      payload: obstacles
     };
   }
 

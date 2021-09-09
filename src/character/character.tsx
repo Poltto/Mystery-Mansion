@@ -26,8 +26,8 @@ export function Character() {
       return {};
     } else {
       let styles = {
-        left: characterPosition?.x * 60,
-        top: characterPosition?.y * 60,
+        left: characterPosition?.positionX * 60,
+        top: characterPosition?.positionY * 60,
       };
       return styles;
     }

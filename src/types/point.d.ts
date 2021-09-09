@@ -1,6 +1,7 @@
 export interface IPoint {
-  x: number;
-  y: number;
+  positionX: number;
+  positionY: number;
   image?: string;
   isBlocking?: boolean;
+  onInteract?: string;
 }

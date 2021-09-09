@@ -3,17 +3,11 @@ import { IItem } from 'Types/item';
 import { IItemCreatorOptions } from 'Types/itemCreator';
 import { Item } from '../item/item';
 
-export function ItemCreator(options: IItemCreatorOptions) {
+export function ItemCreator(itemsFromServer) {
   function createItems() {
-    let reducer = (accumulator, currentValue) => {
-      let element = processItem(currentValue);
-      return accumulator.concat(element);
-    };
-    let items = options.items.reduce(reducer, []);
-
-    return items.filter(item => {
-      return !!item;
-    });
+    return itemsFromServer.map(createItemElement, []).reduce((obj, item) => {
+      return {...obj, [item.props.id]: item};
+    }, {});
   }
 
   function processItem(item: IItem): ReactElement {
@@ -21,20 +15,16 @@ export function ItemCreator(options: IItemCreatorOptions) {
   }
 
   function createItemElement(item: IItem) {
-    if(!item.isInInventory) {
-      return React.createElement(Item,
-        {initialPosition: item.position,
-          key: item.id || Math.random(),
-          id: item.id || Math.random(),
-          image: item.image,
-          name: item.name,
-          onInteract: item.onInteract,
-          isInInventory: item.isInInventory
-        });
-    } else {
-      return;
-    }
-
+    return React.createElement(Item, {
+      positionX: item.positionX,
+      positionY: item.positionY,
+      key: item.id,
+      id: item.id,
+      image: item.image,
+      name: item.name,
+      onInteract: item.onInteract,
+      isInInventory: item.isInInventory
+    });
   }
 
   return createItems();

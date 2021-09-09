@@ -1,60 +1,36 @@
-import { IObstacleCreatorOptions, IObstacleGroup } from 'Types/obstacleCreator';
-import { Obstacle } from '../obstacle/obstacle';
-import { ReactElement } from 'react';
-import { OBSTACLE_CREATOR_TYPES } from 'Types/obstacleTypes';
-import { IPoint } from 'Types/point';
-import { GAME_OBJECT_INTERACTIONS } from '../helpers/interactions.game-object';
+import { IObstacleCreatorOptions, IObstacleGroup } from '../../src/types/obstacleCreator';
+import { OBSTACLE_CREATOR_TYPES } from '../../src/types/obstacleTypes';
+import { IPoint } from '../../src/types/point';
 
-export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServer) {
-  function createObstacles() {
-    let createElementForPoint = (currentValue) => {
-      // let elements = processObstacleGroup(currentValue);
-      let element = processObstacles(currentValue);
-      return element;
+export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
+  function createObstacles(): IPoint[] {
+    let reducer = (accumulator, currentValue) => {
+      let elements = processObstacleGroup(currentValue);
+      return accumulator.concat(elements);
     };
-    // let obstacleElements = options.groups.reduce(reducer, []);
-    let obstacleElements = pointsFromServer.map(createElementForPoint, []).reduce((obj, item) => {
-      return {...obj, [item.props.id]: item};
-    }, {});
-    return obstacleElements;
+    let allPoints: IPoint[] = options.groups.reduce(reducer, []);
+    return allPoints;
   }
 
-  function processObstacles(point) {
-    return createElementsFromPoints2(point);
-  }
-
-  function processObstacleGroup(obstacleGroup: IObstacleGroup): ReactElement[] {
+  function processObstacleGroup(obstacleGroup: IObstacleGroup): IPoint[] {
     if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Point) {
-      return createElementsFromPoints(new Set(obstacleGroup.points), obstacleGroup);
+      return combineAllPoints(new Set(obstacleGroup.points), obstacleGroup);
     } else if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
-      let points: Set<IPoint> = createLineBetweenTwoPoints(a, b);
-      return createElementsFromPoints(points, obstacleGroup);
+      let points: Set<IPoint> = createLineBetweenTwoPoints(a, b, obstacleGroup);
+      return combineAllPoints(points, obstacleGroup);
     } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Plane) {
       let totalPoints = createPolygon(obstacleGroup);
-      totalPoints = fillAreaInsidePoints(totalPoints);
-      return createElementsFromPoints(totalPoints, obstacleGroup);
+      totalPoints = fillAreaInsidePoints(totalPoints, obstacleGroup);
+      return combineAllPoints(totalPoints, obstacleGroup);
     } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Polygon) {
       let totalPoints = createPolygon(obstacleGroup);
-      return createElementsFromPoints(totalPoints, obstacleGroup);
+      return combineAllPoints(totalPoints, obstacleGroup);
     }
   }
 
-  function createElementsFromPoints2(point) {
-    return React.createElement(Obstacle,
-      {
-        positionX: point.positionX,
-        positionY: point.positionY,
-        key: point.id,
-        id: point.id,
-        isBlocking: point.isBlocking,
-        image: point.image,
-        onInteract: GAME_OBJECT_INTERACTIONS[point?.onInteract] ?? GAME_OBJECT_INTERACTIONS['void']
-      });
-  }
-
-  function createElementsFromPoints(totalPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
+  function combineAllPoints(totalPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
     let totalPointsAdjustedWithSpecialPoints;
     if(obstacleGroup.specialPoints) {
       let pointArray = [...totalPoints];
@@ -72,24 +48,7 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
     } else {
       totalPointsAdjustedWithSpecialPoints = totalPoints;
     }
-
-
-
-    let obstacles = [...totalPointsAdjustedWithSpecialPoints].map(point => {
-      let isBlocking = (point.isBlocking === true || point.isBlocking === false) ? point.isBlocking : obstacleGroup.isBlocking;
-      let reactElement = React.createElement(Obstacle,
-        {
-          positionX: point.positionX,
-          positionY: point.positionY,
-          key: point.id,
-          id: point.id,
-          isBlocking,
-          image: point.image ?? obstacleGroup.image,
-          onInteract: obstacleGroup.onInteract
-        });
-      return reactElement;
-    });
-    return obstacles;
+    return [...totalPointsAdjustedWithSpecialPoints];
   }
 
   function createPolygon(obstacleGroup): Set<IPoint> {
@@ -101,14 +60,14 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
       if(point1.positionX === point2.positionX && point1.positionY === point2.positionY) {
         points = new Set<IPoint>([point1]);
       } else {
-        points = createLineBetweenTwoPoints(point1, point2);
+        points = createLineBetweenTwoPoints(point1, point2, obstacleGroup);
       }
       totalPoints = new Set<IPoint>([...points, ...totalPoints]);
     }
     return totalPoints;
   }
 
-  function createLineBetweenTwoPoints(point1: IPoint, point2: IPoint): Set<IPoint> {
+  function createLineBetweenTwoPoints(point1: IPoint, point2: IPoint, obstacleGroup: IObstacleGroup): Set<IPoint> {
     let points: IPoint[] = [];
     let xDistance = Math.abs(point2.positionX - point1.positionX);
     let yDistance = Math.abs(point2.positionY - point1.positionY);
@@ -118,10 +77,16 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
     let yDirection = point1.positionY < point2.positionY ? 'increment' : 'decrement';
     let rounds = 0;
     while((xTraveled < xDistance || yTraveled < yDistance) && rounds < 1000) {
-      let positionX = xDirection === 'increment' ? point1.positionX + xTraveled : point1.positionX - xTraveled;
-      let positionY = yDirection === 'increment' ? point1.positionY + yTraveled : point1.positionY - yTraveled;
+      let x = xDirection === 'increment' ? point1.positionX + xTraveled : point1.positionX - xTraveled;
+      let y = yDirection === 'increment' ? point1.positionY + yTraveled : point1.positionY - yTraveled;
       rounds++;
-      points.push({positionX, positionY});
+      points.push({
+        positionX: x,
+        positionY: y,
+        image: obstacleGroup.image,
+        isBlocking: obstacleGroup.isBlocking,
+        onInteract: obstacleGroup.onInteract
+      });
       let xyRatio = xDistance / yDistance;
       let isXAboveRatio = xyRatio >= 1 ? true : (yTraveled * xyRatio >= xTraveled);
       let isYAboveRatio = xyRatio >= 1 ? ((yTraveled * xyRatio) <= xTraveled) : true;
@@ -135,18 +100,18 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
     return new Set<IPoint>(points);
   }
 
-  function fillAreaInsidePoints(points: Set<IPoint>): Set<IPoint> {
+  function fillAreaInsidePoints(points: Set<IPoint>, obstacleGroup): Set<IPoint> {
     let filledPoints: Set<IPoint> = new Set<IPoint>([...points]);
 
     for(let singlePoint of points) {
-      createTestPoint(singlePoint, filledPoints);
+      createTestPoint(singlePoint, filledPoints, obstacleGroup);
     }
 
     return filledPoints;
   }
 
-  function createTestPoint(singlePoint: IPoint, allPoints: Set<IPoint>) {
-    let testPoint: IPoint = {
+  function createTestPoint(singlePoint: IPoint, allPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
+    let testPoint = {
       positionX: singlePoint.positionX + 1,
       positionY: singlePoint.positionY
     };
@@ -164,10 +129,19 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
       return !isIdentical  && hasPointAbove && hasPointBelow;
     });
     if(isAcceptablePoint) {
-      allPoints.add(testPoint);
-      createTestPoint(testPoint, allPoints);
+      let properTestPoint: IPoint = {
+        positionX: testPoint.positionX,
+        positionY: testPoint.positionY,
+        image: obstacleGroup.image,
+        onInteract: obstacleGroup.onInteract,
+        isBlocking: obstacleGroup.isBlocking
+      };
+      allPoints.add(properTestPoint);
+      createTestPoint(properTestPoint, allPoints, obstacleGroup);
     }
   }
 
   return createObstacles();
 }
+
+module.exports = DefaultDataObstacleCreator;

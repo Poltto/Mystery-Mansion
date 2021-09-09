@@ -1,6 +1,6 @@
 
-let GameObjectController = () => {
-  let GameObject = require('../models/models.game-object.js');
+let ItemController = () => {
+  let Item = require('../models/models.item.js');
 
   return {
     create: (req, res) => {
@@ -10,16 +10,19 @@ let GameObjectController = () => {
         });
       }
 
-      const newGameObject = new GameObject({
+      const newItem = new Item({
         positionX: req.body.positionX,
-        positionY: req.body.positionY
+        positionY: req.body.positionY,
+        onInteract: req.body.onInteract,
+        isInInventory: req.body.isInInventory,
+        id: req.body.id
       });
 
-      GameObject.create(newGameObject, (err, data) => {
+      Item.create(newItem, (err, data) => {
         if(err) {
           res.status(err.status).send({
             message: err.message
-          })
+          });
         } else {
           res.send(data);
         }
@@ -28,13 +31,13 @@ let GameObjectController = () => {
 
     get: (req, res) => {
       if(req.params.id) {
-        GameObject.findByPk(req.params.id).then((data) => {
+        Item.findByPk(req.params.id).then((data) => {
           res.send(data);
         }, (error) => {
           res.status(error.status).send({message: error.message});
         });
       } else {
-        GameObject.findAll({}).then((data) => {
+        Item.findAll({}).then((data) => {
           res.send(data);
         }, (error) => {
           res.status(error.status).send({
@@ -50,9 +53,14 @@ let GameObjectController = () => {
 
     delete: (req, res) => {
 
+    },
+
+    pickUpItem: (req, res) => {
+      console.log("REQUEST BODY: ", req.params);
+      res.send("OK");
     }
   };
 };
 
 
-module.exports = GameObjectController();
+module.exports = ItemController();

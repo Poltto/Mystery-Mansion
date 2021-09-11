@@ -1,11 +1,12 @@
 import { IObstacleCreatorOptions, IObstacleGroup } from 'Types/obstacleCreator';
 import { Obstacle } from '../obstacle/obstacle';
 import { ReactElement } from 'react';
-import { OBSTACLE_CREATOR_TYPES } from 'Types/obstacleTypes';
 import { IPoint } from 'Types/point';
-import { GAME_OBJECT_INTERACTIONS } from '../helpers/interactions.game-object';
+const OBSTACLE_CREATION_STATICS = require('Helpers/statics.obstacles.ts');
+const GAME_OBJECT_INTERACTIONS = require('Helpers/interactions.game-object.ts');
 
-export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServer) {
+
+export function ObstacleCreator(pointsFromServer) {
   function createObstacles() {
     let createElementForPoint = (currentValue) => {
       // let elements = processObstacleGroup(currentValue);
@@ -24,18 +25,18 @@ export function ObstacleCreator(options: IObstacleCreatorOptions, pointsFromServ
   }
 
   function processObstacleGroup(obstacleGroup: IObstacleGroup): ReactElement[] {
-    if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Point) {
+    if(obstacleGroup.type === OBSTACLE_CREATION_STATICS.TYPES.Point) {
       return createElementsFromPoints(new Set(obstacleGroup.points), obstacleGroup);
-    } else if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Line) {
+    } else if(obstacleGroup.type === OBSTACLE_CREATION_STATICS.TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
       let points: Set<IPoint> = createLineBetweenTwoPoints(a, b);
       return createElementsFromPoints(points, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Plane) {
+    } else if (obstacleGroup.type === OBSTACLE_CREATION_STATICS.TYPES.Plane) {
       let totalPoints = createPolygon(obstacleGroup);
       totalPoints = fillAreaInsidePoints(totalPoints);
       return createElementsFromPoints(totalPoints, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Polygon) {
+    } else if (obstacleGroup.type === OBSTACLE_CREATION_STATICS.TYPES.Polygon) {
       let totalPoints = createPolygon(obstacleGroup);
       return createElementsFromPoints(totalPoints, obstacleGroup);
     }

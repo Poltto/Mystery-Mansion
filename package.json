@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "supervisor ./www",
-    "startFrontend": "webpack-dev-server --config webpack.dev.js",
+    "start": "ts-node ./www",
+    "startFrontend": "webpack-dev-server --mode=development --config=webpack.dev.js",
     "build": "webpack --config webpack.common.js"
   },
   "devDependencies": {
@@ -50,6 +50,7 @@
     "eslint": "^7.32.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.21",
+    "mini-css-extract-plugin": "^2.2.2",
     "moment": "^2.24.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
@@ -64,6 +65,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.7",
+    "resolve-url-loader": "^4.0.0",
     "sequelize": "^6.6.5",
     "source-map-loader": "^3.0.0",
     "supervisor": "^0.12.0",

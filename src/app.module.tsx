@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
-import './_app.scss';
+import './app.scss';
 
 require.context('./assets', true, /\.(png|jpeg|jpg|gif)/);
 require.context('./assets', true, /\.(ttf|svg)/);

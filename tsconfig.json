@@ -17,7 +17,8 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "Types/*": ["src/types/*"]
+      "Types/*": ["src/types/*"],
+      "Helpers/*": ["src/helpers/*"]
     },
     "types": [
       "node",

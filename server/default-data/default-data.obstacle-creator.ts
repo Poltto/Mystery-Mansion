@@ -1,5 +1,5 @@
 import { IObstacleCreatorOptions, IObstacleGroup } from '../../src/types/obstacleCreator';
-import { OBSTACLE_CREATOR_TYPES } from '../../src/types/obstacleTypes';
+const OBSTACLE_STATICS = require('../../src/helpers/statics.obstacles');
 import { IPoint } from '../../src/types/point';
 
 export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
@@ -13,18 +13,18 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
   }
 
   function processObstacleGroup(obstacleGroup: IObstacleGroup): IPoint[] {
-    if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Point) {
+    if(obstacleGroup.type === OBSTACLE_STATICS.TYPES.Point) {
       return combineAllPoints(new Set(obstacleGroup.points), obstacleGroup);
-    } else if(obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Line) {
+    } else if(obstacleGroup.type === OBSTACLE_STATICS.TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
       let points: Set<IPoint> = createLineBetweenTwoPoints(a, b, obstacleGroup);
       return combineAllPoints(points, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Plane) {
+    } else if (obstacleGroup.type === OBSTACLE_STATICS.TYPES.Plane) {
       let totalPoints = createPolygon(obstacleGroup);
       totalPoints = fillAreaInsidePoints(totalPoints, obstacleGroup);
       return combineAllPoints(totalPoints, obstacleGroup);
-    } else if (obstacleGroup.type === OBSTACLE_CREATOR_TYPES.Polygon) {
+    } else if (obstacleGroup.type === OBSTACLE_STATICS.TYPES.Polygon) {
       let totalPoints = createPolygon(obstacleGroup);
       return combineAllPoints(totalPoints, obstacleGroup);
     }

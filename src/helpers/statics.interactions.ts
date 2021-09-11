@@ -1,4 +1,6 @@
-export enum INTERACTIONS {
-  PICK_UP_ITEM = 'pick_up_item',
-  VOID = 'void'
+const INTERACTIONS = {
+  PICK_UP_ITEM: 'pick_up_item',
+  VOID: 'void'
 }
+
+module.exports = INTERACTIONS;

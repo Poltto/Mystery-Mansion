@@ -1,4 +1,4 @@
-import { INTERACTIONS } from './statics.interactions';
+const INTERACTIONS = require('./statics.interactions');
 import { ACTIONS } from '../redux/actions';
 
 export const ITEM_INTERACTIONS = {

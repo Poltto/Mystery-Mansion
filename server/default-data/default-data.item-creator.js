@@ -1,9 +1,4 @@
-import { ReactElement } from 'react';
-import { IItem } from 'Types/item';
-import { IItemCreatorOptions } from 'Types/itemCreator';
-import { Item } from '../../src/item/item';
-
-export function DefaultDataItemCreator(options) {
+function DefaultDataItemCreator(options) {
   function createItems() {
     let reducer = (accumulator, currentValue) => {
       let element = processItem(currentValue);
@@ -36,3 +31,5 @@ export function DefaultDataItemCreator(options) {
 
   return createItems();
 }
+
+module.exports = DefaultDataItemCreator;

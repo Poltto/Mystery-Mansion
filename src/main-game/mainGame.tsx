@@ -7,7 +7,6 @@ import { ACTIONS } from '../redux/actions';
 import { useEffect } from 'react';
 import { Item } from '../endpoints/endpoint.item';
 import {RootState} from "../redux/reducers";
-let GAME_OBJECTS = require('../helpers/game-objects.ts');
 
 export function MainGame(props) {
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ export function MainGame(props) {
   useEffect(() => {
     GameObject.get().then((result) => {
       result.json().then((jsonResult) => {
-        let newObstacles = ObstacleCreator({groups: GAME_OBJECTS}, jsonResult);
+        let newObstacles = ObstacleCreator(jsonResult);
         let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES(newObstacles);
         dispatch(action);
       });

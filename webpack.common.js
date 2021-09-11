@@ -2,6 +2,7 @@ const path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   entry: {
     app: './src/app.module.tsx',
@@ -27,6 +28,9 @@ module.exports = {
     }
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[chunkhash].bundle.css'
+    }),
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       'toastr': 'toastr/toastr.js',
@@ -51,46 +55,58 @@ module.exports = {
       use: 'html-loader'
     },
 
-      {
-        test: /\.(tsx|js|jsx)$/,
-        exclude: path.resolve(__dirname, 'node_modules/'),
-        loader: 'babel-loader'
-      },
-      {
-        test: /\.ts$/,
-        exclude: path.resolve(__dirname, 'node_modules/'),
-        loader: 'ts-loader'
-      },
-      {
-        test: /\.(sa|sc)ss$/,
-        use: [
-          'css-loader',
-          'sass-loader'
-        ],
-      },
-      {
-        test: /\.(png|jpeg|jpg|gif|svg)$/,
-        // include: path.join(__dirname, 'src/assets/images/'),
-        loader: 'file-loader',
-        options: {
-          outputPath: 'images/[name].[ext]',
-          publicPath: 'images',
-          context: 'src/assets/images'
-        }
-      }, {
-        test: /\.(woff|woff2|eot|ttf)(\?.+)?$/i,
-        loader: 'file-loader',
-        options: {
-          outputPath: 'fonts/[name].[ext]',
-          publicPath: 'fonts/[name].[ext]',
-          context: 'src/assets/fonts'
-        }
-      }]
+    {
+      test: /\.(tsx|js|jsx)$/,
+      exclude: path.resolve(__dirname, 'node_modules/'),
+      loader: 'babel-loader'
+    },
+    {
+      test: /\.ts$/,
+      exclude: path.resolve(__dirname, 'node_modules/'),
+      loader: 'ts-loader'
+    },
+    {
+      test: /\.(sa|sc|c)ss$/,
+      use: [
+        {
+          loader: MiniCssExtractPlugin.loader
+        },
+        {
+          loader: 'css-loader',
+          options: {
+            url: false
+          }
+        },
+        {
+          loader: 'resolve-url-loader',
+          options: {}
+        },
+        'sass-loader'
+      ]
+    },
+    {
+      test: /\.(png|jpeg|jpg|gif|svg)$/,
+      // include: path.join(__dirname, 'src/assets/images/'),
+      loader: 'file-loader',
+      options: {
+        name: 'images/[name].[ext]',
+        context: 'src/assets/images'
+      }
+    },
+    {
+      test: /\.(woff|woff2|eot|ttf)(\?.+)?$/i,
+      loader: 'file-loader',
+      options: {
+        name: 'fonts/[name].[ext]',
+        context: 'src/assets/fonts'
+    }
+    }]
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
       Types: path.resolve(__dirname, 'src/types/'),
+      Helpers: path.resolve(__dirname, 'src/helpers/'),
       'images': path.resolve(__dirname, 'src/assets/images'),
       'fonts': path.resolve(__dirname, 'src/assets/fonts')
     },

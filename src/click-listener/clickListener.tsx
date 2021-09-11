@@ -8,11 +8,10 @@ import { IObstacle } from 'Types/obstacle';
 import { useSelector } from 'react-redux';
 import { IItem, IItemElement } from 'Types/item';
 import { ITEM_INTERACTIONS } from '../helpers/interactions.items';
-import { INTERACTIONS } from '../helpers/statics.interactions';
 import { Item } from '../endpoints/endpoint.item';
 import { KEYMAP } from '../helpers/statics.keymap';
 import {RootState} from "../redux/reducers";
-
+const INTERACTIONS = require('../helpers/statics.interactions');
 export function ClickListener() {
 
   const dispatch = useDispatch();

@@ -7,13 +7,17 @@ var mysql = require('mysql');
 const { Sequelize } = require('sequelize');
 const DefaultDataInits = require('./default-data/default-data.js');
 
-var bodyParser = require('body-parser')
-var jsonParser = bodyParser.json()
-var urlencodedParser = bodyParser.urlencoded({ extended: true })
 const initModelsAndData = require('./default-data/default-data.js');
 var app = express();
-require('./routes/routes.game-object.ts')(app);
-require('./routes/routes.item.ts')(app);
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+require('./routes/routes.game-object.js')(app);
+require('./routes/routes.item.js')(app);
 const sequelize = new Sequelize('game', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
@@ -24,15 +28,6 @@ const sequelize = new Sequelize('game', 'root', '', {
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.get('/api/gameObject', (req, res) => {
-  return res.send('Received a GET HTTP method');
-});
-
-app.use(logger('dev'));
-app.use(urlencodedParser);
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -75,7 +70,20 @@ connection.connect(error => {
       sequelize.authenticate().then(async () => {
         try {
           initModelsAndData.initModels(sequelize);
-          await sequelize.sync({force: true});
+          sequelize.query('SET FOREIGN_KEY_CHECKS = 0').then(function() {
+            sequelize
+              .sync({
+                force: true
+              }).then(function() {
+              sequelize.query('SET FOREIGN_KEY_CHECKS = 1').then(function() {
+                console.log('Database synchronised.');
+              });
+            }, function(err) {
+              console.log(err);
+            });
+          }, function(ee) {
+            console.log(err);
+          });
           initModelsAndData.initData();
         } catch(error) {
           console.log(error);

@@ -1,24 +1,22 @@
-import { IObstacleCreatorOptions, IObstacleGroup } from '../../src/types/obstacleCreator';
-const OBSTACLE_STATICS = require('../../src/helpers/statics.obstacles');
-import { IPoint } from '../../src/types/point';
+const OBSTACLE_STATICS = require('../../src/helpers/statics.obstacles.ts');
 
-export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
-  function createObstacles(): IPoint[] {
+function DefaultDataObstacleCreator(options) {
+  function createObstacles() {
     let reducer = (accumulator, currentValue) => {
       let elements = processObstacleGroup(currentValue);
       return accumulator.concat(elements);
     };
-    let allPoints: IPoint[] = options.groups.reduce(reducer, []);
+    let allPoints = options.groups.reduce(reducer, []);
     return allPoints;
   }
 
-  function processObstacleGroup(obstacleGroup: IObstacleGroup): IPoint[] {
+  function processObstacleGroup(obstacleGroup) {
     if(obstacleGroup.type === OBSTACLE_STATICS.TYPES.Point) {
       return combineAllPoints(new Set(obstacleGroup.points), obstacleGroup);
     } else if(obstacleGroup.type === OBSTACLE_STATICS.TYPES.Line) {
       let a = obstacleGroup.points[0];
       let b = obstacleGroup.points[1];
-      let points: Set<IPoint> = createLineBetweenTwoPoints(a, b, obstacleGroup);
+      let points = createLineBetweenTwoPoints(a, b, obstacleGroup);
       return combineAllPoints(points, obstacleGroup);
     } else if (obstacleGroup.type === OBSTACLE_STATICS.TYPES.Plane) {
       let totalPoints = createPolygon(obstacleGroup);
@@ -30,7 +28,7 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
     }
   }
 
-  function combineAllPoints(totalPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
+  function combineAllPoints(totalPoints, obstacleGroup) {
     let totalPointsAdjustedWithSpecialPoints;
     if(obstacleGroup.specialPoints) {
       let pointArray = [...totalPoints];
@@ -51,24 +49,24 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
     return [...totalPointsAdjustedWithSpecialPoints];
   }
 
-  function createPolygon(obstacleGroup): Set<IPoint> {
-    let totalPoints = new Set<IPoint>([]);
+  function createPolygon(obstacleGroup) {
+    let totalPoints = new Set([]);
     for(let i = 0; i < obstacleGroup.points.length; i++) {
       let point1 = obstacleGroup.points[i];
       let point2 = (i === obstacleGroup.points.length - 1) ? obstacleGroup.points[0] : obstacleGroup.points[i + 1];
-      let points: Set<IPoint>;
+      let points;
       if(point1.positionX === point2.positionX && point1.positionY === point2.positionY) {
-        points = new Set<IPoint>([point1]);
+        points = new Set([point1]);
       } else {
         points = createLineBetweenTwoPoints(point1, point2, obstacleGroup);
       }
-      totalPoints = new Set<IPoint>([...points, ...totalPoints]);
+      totalPoints = new Set([...points, ...totalPoints]);
     }
     return totalPoints;
   }
 
-  function createLineBetweenTwoPoints(point1: IPoint, point2: IPoint, obstacleGroup: IObstacleGroup): Set<IPoint> {
-    let points: IPoint[] = [];
+  function createLineBetweenTwoPoints(point1, point2, obstacleGroup) {
+    let points = [];
     let xDistance = Math.abs(point2.positionX - point1.positionX);
     let yDistance = Math.abs(point2.positionY - point1.positionY);
     let xTraveled = 0;
@@ -97,11 +95,11 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
         yTraveled++;
       }
     }
-    return new Set<IPoint>(points);
+    return new Set(points);
   }
 
-  function fillAreaInsidePoints(points: Set<IPoint>, obstacleGroup): Set<IPoint> {
-    let filledPoints: Set<IPoint> = new Set<IPoint>([...points]);
+  function fillAreaInsidePoints(points, obstacleGroup) {
+    let filledPoints = new Set([...points]);
 
     for(let singlePoint of points) {
       createTestPoint(singlePoint, filledPoints, obstacleGroup);
@@ -110,7 +108,7 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
     return filledPoints;
   }
 
-  function createTestPoint(singlePoint: IPoint, allPoints: Set<IPoint>, obstacleGroup: IObstacleGroup) {
+  function createTestPoint(singlePoint, allPoints, obstacleGroup) {
     let testPoint = {
       positionX: singlePoint.positionX + 1,
       positionY: singlePoint.positionY
@@ -129,7 +127,7 @@ export function DefaultDataObstacleCreator(options: IObstacleCreatorOptions) {
       return !isIdentical  && hasPointAbove && hasPointBelow;
     });
     if(isAcceptablePoint) {
-      let properTestPoint: IPoint = {
+      let properTestPoint = {
         positionX: testPoint.positionX,
         positionY: testPoint.positionY,
         image: obstacleGroup.image,

@@ -7,16 +7,22 @@ export class Item {
 
   public static get(params?) {
     let options = {
-      method: 'GET'
+      'method': 'GET',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
     };
 
     let urlSuffix = params?.id ? '/' + params.id : '';
     return fetch(this.urlPrefix + '/api/item' + urlSuffix, options);
   }
 
-  public static pickUpItem({...itemId}) {
+  public static pickUpItem({itemId}) {
     let options = {
-      method: 'POST',
+      'method': 'POST',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({itemId})
     };
 

@@ -1,5 +1,5 @@
 module.exports = app => {
-  const ItemController = require('../controllers/controllers.item.ts');
+  const ItemController = require('../controllers/controllers.item.js');
 
   app.post('/api/item', ItemController.create);
 

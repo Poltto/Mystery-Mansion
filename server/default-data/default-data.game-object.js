@@ -56,13 +56,10 @@ async function initGameObjects(sequelize) {
     ]
 
   const GameObject = require('../models/models.game-object.js');
-  const DefaultDataObstacleCreator = require('./default-data.obstacle-creator.ts');
+  const DefaultDataObstacleCreator = require('./default-data.obstacle-creator.js');
 
   let allPoints = DefaultDataObstacleCreator({groups: GAME_OBJECTS});
 
-
-
-  console.log(allPoints);
   allPoints.forEach(point => {
 
     GameObject.findOrCreate({

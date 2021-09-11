@@ -1,5 +1,5 @@
 module.exports = app => {
-  const GameObjectController = require('../controllers/controllers.game-object.ts');
+  const GameObjectController = require('../controllers/controllers.game-object.js');
 
   app.post('/api/gameObject', GameObjectController.create);
 

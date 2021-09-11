@@ -1,6 +1,8 @@
 
 let ItemController = () => {
   let Item = require('../models/models.item.js');
+  let Inventory = require('../models/models.inventory.js');
+  let InventoryItem = require('../models/models.inventory-item.js');
 
   return {
     create: (req, res) => {
@@ -55,9 +57,19 @@ let ItemController = () => {
 
     },
 
-    pickUpItem: (req, res) => {
-      console.log("REQUEST BODY: ", req.params);
-      res.send("OK");
+    pickUpItem: async (req, res) => {
+      let inventory = Inventory.findByPk(1);
+      Item.findByPk(req.body.itemId).then(async (item) => {
+        console.log(req.body.itemId, item);
+        item.isInInventory = true;
+        await InventoryItem.create({
+          item,
+          inventory
+        });
+
+      }).then((result) => {
+        res.send(result);
+      })
     }
   };
 };

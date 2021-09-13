@@ -77,9 +77,7 @@ connection.connect(error => {
                 force: true
               }).then(function() {
               sequelize.query('SET FOREIGN_KEY_CHECKS = 1').then(function() {
-                console.log('Database synchronised.');
                 initModelsAndData.initData();
-
               });
 
             }, function(err) {

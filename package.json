@@ -5,6 +5,7 @@
   "scripts": {
     "start": "supervisor ./www",
     "startFrontend": "webpack-dev-server --mode=development --config=webpack.dev.js",
+    "debug": "supervisor ./www",
     "build": "webpack --config webpack.common.js"
   },
   "devDependencies": {

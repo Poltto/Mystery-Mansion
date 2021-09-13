@@ -58,18 +58,30 @@ let ItemController = () => {
     },
 
     pickUpItem: async (req, res) => {
-      let inventory = Inventory.findByPk(1);
-      Item.findByPk(req.body.itemId).then(async (item) => {
-        console.log(req.body.itemId, item);
-        item.isInInventory = true;
-        await InventoryItem.create({
-          item,
-          inventory
-        });
+      let promises;
+      let inventoryPromise = Inventory.findByPk(1);
+      let itemPromise = Item.findByPk(req.body.itemId);
+      let inventory;
+      let item;
 
-      }).then((result) => {
-        res.send(result);
+      inventoryPromise.then(result => {
+        inventory = result;
       })
+
+      itemPromise.then(result => {
+        item = result;
+      })
+
+      promises = [inventoryPromise, itemPromise];
+      Promise.allSettled(promises).then( async (result) => {
+        item.isInInventory = true;
+        console.log("ITEMID: ", item.id);
+        let inventoryItem = await InventoryItem.create();
+        inventoryItem.setItem(item);
+        inventoryItem.setInventory(inventory);
+        let inventoryItemResult = {item, inventory};
+        res.send(inventoryItemResult);
+      });
     }
   };
 };

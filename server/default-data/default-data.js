@@ -42,8 +42,8 @@ function initModels(sequelize) {
     sequelize
   })
 
-  Inventory.hasOne(InventoryItem);
-  Item.hasOne(InventoryItem);
+  InventoryItem.belongsTo(Inventory, {foreignKey: 'inventoryId', as: 'Inventory'});
+  InventoryItem.belongsTo(Item, {foreignKey: 'itemId', as: 'Item'});
 
 
   GameObject.init({

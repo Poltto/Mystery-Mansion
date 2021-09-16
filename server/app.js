@@ -61,7 +61,6 @@ var connection = mysql.createConnection({
 
 
 
-
 connection.connect(error => {
   if(error) {
     throw(error);
@@ -70,21 +69,24 @@ connection.connect(error => {
       sequelize.authenticate().then(async () => {
         try {
           initModelsAndData.initModels(sequelize);
+          console.log("Inited models, now initing sequelize");
+
           sequelize.query('SET FOREIGN_KEY_CHECKS = 0').then(function() {
             sequelize
               .sync({
                 force: true
               }).then(function() {
               sequelize.query('SET FOREIGN_KEY_CHECKS = 1').then(function() {
-                console.log('Database synchronised.');
+                initModelsAndData.initData();
               });
+
             }, function(err) {
               console.log(err);
             });
           }, function(ee) {
             console.log(err);
           });
-          initModelsAndData.initData();
+
         } catch(error) {
           console.log(error);
         }

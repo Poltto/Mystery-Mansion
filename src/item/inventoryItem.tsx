@@ -10,6 +10,7 @@ export function InventoryItem(props) {
       collect: (monitor) => ({
         isDragging: monitor.isDragging()
       })
+
     }),
     []
   );

@@ -39,11 +39,15 @@ export function EditMode() {
         return state.EditModeReducer.isBlocking;
     })
 
+    const name = useSelector((state: RootState) => {
+        return state.EditModeReducer.name;
+    })
+
+
     useEventListener('click', (event) => {
         if(isTileSelectionOpen || !selectedTile) {
             return;
         }
-        console.log(selectedTile);
 
         let squaresX = Math.floor(event.clientX / STATICS.SQUARE);
         let squaresY = Math.floor(event.clientY / STATICS.SQUARE);
@@ -54,7 +58,7 @@ export function EditMode() {
         let newTile = {
             positionX: squaresX,
             positionY: squaresY,
-            isBlocking: true,
+            isBlocking: isBlocking,
             image: selectedTile,
             onInteract: null
         }

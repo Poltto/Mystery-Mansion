@@ -3,6 +3,7 @@ import './app.scss';
 
 require.context('./assets', true, /\.(png|jpeg|jpg|gif)/);
 require.context('./assets', true, /\.(ttf|svg)/);
+require.context('./icomoon', true, /\.(woff|woff2|eot|ttf)/);
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { App } from './App';

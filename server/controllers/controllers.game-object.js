@@ -9,20 +9,24 @@ let GameObjectController = () => {
           message: 'Content can not be empty!'
         });
       }
+      let positionX = req.body.positionX;
+      let positionY = req.body.positionY;
 
-      const newGameObject = new GameObject({
-        positionX: req.body.positionX,
-        positionY: req.body.positionY
-      });
+      const newGameObject = {
+        positionX,
+        positionY,
+        isBlocking: req.body.isBlocking,
+        image: req.body.image,
+        onInteract: req.body.onInteract,
+        id: positionX.toString() + positionY?.toString()
+      };
 
-      GameObject.create(newGameObject, (err, data) => {
-        if(err) {
-          res.status(err.status).send({
-            message: err.message
-          })
-        } else {
-          res.send(data);
-        }
+      GameObject.create(newGameObject).then ((data) => {
+        res.send(data);
+      }, (error) => {
+        res.status(error.status).send({
+          message: error.message
+        })
       });
     },
 

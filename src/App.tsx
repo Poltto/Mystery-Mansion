@@ -9,6 +9,7 @@ import {
 import { Opening } from './opening/opening';
 import { MainGame } from './main-game/mainGame';
 import { MainMenu } from './main-menu/mainMenu';
+import { EditMode } from "./edit-mode/edit-mode";
 
 export function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export function App() {
         <Route exact={true} path='/' component={MainMenu}/>
         <Route exact={true} path='/opening' component={Opening}/>
         <Route path='/main' component={MainGame}/>
+        <Route path='/edit-mode' component={EditMode}/>
       </Switch>
     </Router>
   );

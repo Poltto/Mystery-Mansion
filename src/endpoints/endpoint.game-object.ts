@@ -14,6 +14,18 @@ export class GameObject {
     return fetch(this.urlPrefix + '/api/gameObject' + urlSuffix, options);
   }
 
+  public static create(gameObject) {
+    let options = {
+      method: 'POST',
+      body: JSON.stringify(gameObject),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    };
+
+    return fetch(this.urlPrefix + '/api/gameObject', options);
+  }
+
   constructor() {
 
   }

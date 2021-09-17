@@ -1,6 +1,6 @@
 $height:  3000px;
 $width: 3000px;
-$square: calc(#{$height} / 50);
+$square: 60px;
 
 
 @import './variables';
@@ -14,6 +14,7 @@ $square: calc(#{$height} / 50);
 @import './item/item';
 @import './itemSlot/itemSlot';
 @import './main-menu/mainMenu';
+@import './edit-mode/edit-mode';
 
 @font-face {
   font-family: 'Medieval';
@@ -50,6 +51,11 @@ html {
   width: 100%;
 
   .main-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .edit-mode-container {
     height: 100%;
     width: 100%;
   }

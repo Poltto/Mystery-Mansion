@@ -10,14 +10,16 @@ import { IItem, IItemElement } from 'Types/item';
 import { ITEM_INTERACTIONS } from '../helpers/interactions.items';
 import { Item } from '../endpoints/endpoint.item';
 import { KEYMAP } from '../helpers/statics.keymap';
+import { useLocation } from 'react-router-dom'
+
 import {RootState} from "../redux/reducers";
 const INTERACTIONS = require('../helpers/statics.interactions');
 export function ClickListener() {
-
+  const location = useLocation();
   const dispatch = useDispatch();
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
 
-  const obstacles: IObstacle[] = useSelector((state: RootState) => {
+  const obstacles = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles;
   });
   const items: IItemElement[] = useSelector((state: RootState) => {
@@ -60,6 +62,8 @@ export function ClickListener() {
       onSimpleInteract();
     } else if (event.keyCode === KEYMAP.INVENTORY) {
       onToggleInventory();
+    } else if (event.keyCode === KEYMAP.TILE_SELECTION) {
+      onToggleTileSelection();
     } else {
       let index = characterRef.current.keysDown.findIndex(item => item === event.keyCode);
       if(characterRef.current.keysDown.length && index === characterRef.current.keysDown.length - 1) {
@@ -92,6 +96,12 @@ export function ClickListener() {
     doDispatch(ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE);
   }
 
+  function onToggleTileSelection() {
+    if(location.pathname === '/edit-mode') {
+      doDispatch(ACTIONS.EDIT_MODE_ACTIONS.ENUMS.TOGGLE_TILE_SELECTION);
+    }
+  }
+
   function onSimpleInteract() {
     let targetPosition: IPoint = returnPositionInDirection(characterPosition, characterDirection, 1);
     // let interactedObstacle = Object.values(obstacles).find((it) => {
@@ -112,7 +122,6 @@ export function ClickListener() {
           console.log("Error", error);
         });
       }
-      console.log(ITEM_INTERACTIONS, interactedItem);
       dispatch(ITEM_INTERACTIONS[interactedItem.props.onInteract]([interactedItem]));
     }
   }

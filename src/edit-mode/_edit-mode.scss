@@ -3,6 +3,22 @@
   height: 100%;
   position: relative;
 
+
+  .close-tile-selection-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    span {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+  }
   .edit-mode-game-container {
     position: absolute;
     width: 100%;
@@ -29,35 +45,53 @@
 
     .edit-mode-tile-container-section {
       width: 100%;
-      padding: 5px 2px;
+      padding: 12px 8px;
       height: calc(#{$square} * 2);
       display: flex;
+      border-bottom: 3px solid white;
+      opacity: 0.4;
+      cursor: pointer;
 
-      .single-obstacle-type {
-        height: $square;
-        width: $square;
-        margin: 5px;
-        position: relative;
-        opacity: 0.8;
-        border: 1px solid grey;
+      &.selected {
+        opacity: 1;
+      }
 
-        cursor: pointer;
+      &:last-child {
+        border-bottom: none;
+      }
 
-        &:hover {
-          opacity: 1;
-        }
+      .edit-mode-tile-container-inner-section {
+        display: flex;
+        align-items: center;
+        margin: 0 20px;
 
-        img {
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
-        }
+        .single-obstacle-type {
+          height: $square;
+          width: $square;
+          margin: 5px;
+          position: relative;
+          opacity: 0.8;
+          border: 1px solid grey;
 
-        &.selected {
-          opacity: 1;
-          border: 2px solid white;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          }
+
+          &.selected {
+            opacity: 1;
+            border: 2px solid white;
+          }
         }
       }
+
     }
   }
 }

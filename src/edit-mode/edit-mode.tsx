@@ -43,6 +43,9 @@ export function EditMode() {
         return state.EditModeReducer.name;
     })
 
+    const onInteract = useSelector((state: RootState) => {
+        return state.EditModeReducer.onInteract;
+    })
 
     useEventListener('click', (event) => {
         if(isTileSelectionOpen || !selectedTile) {
@@ -60,7 +63,8 @@ export function EditMode() {
             positionY: squaresY,
             isBlocking: isBlocking,
             image: selectedTile,
-            onInteract: null
+            onInteract: onInteract,
+            name: name
         }
 
         GameObject.create(newTile).then(result => {

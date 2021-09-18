@@ -1,9 +1,6 @@
-import { ACTIONS } from '../redux/actions';
-import { IObstacle } from 'Types/obstacle';
-import { IPoint } from 'Types/point';
 import {EDIT_MODE_ACTIONS} from "./actions.edit-mode";
 
-export function EditModeReducer(state = {name: '', selectedTile: null, isTileSelectionOpen: false, isBlocking: true}, action) {
+export function EditModeReducer(state = {onInteract: '', tileType: 'gameObject', name: '', selectedTile: null, isTileSelectionOpen: false, isBlocking: true}, action) {
     if(action.type === EDIT_MODE_ACTIONS.ENUMS.SELECT_TILE) {
         let tile = action.payload;
         state.selectedTile = tile;
@@ -13,6 +10,12 @@ export function EditModeReducer(state = {name: '', selectedTile: null, isTileSel
         state.isBlocking = action.payload.isBlocking;
     } else if (action.type === EDIT_MODE_ACTIONS.ENUMS.SET_NAME) {
         state.name = action.payload.name;
+    } else if (action.type === EDIT_MODE_ACTIONS.ENUMS.SELECT_TILE_TYPE) {
+        state.tileType = action.payload.type;
+        state.onInteract = 'void';
+        state.name = '';
+    } else if (action.type === EDIT_MODE_ACTIONS.ENUMS.SET_ON_INTERACT) {
+        state.onInteract = action.payload.onInteract;
     }
     return state;
 

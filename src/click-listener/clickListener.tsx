@@ -33,6 +33,10 @@ export function ClickListener() {
     return state.CharacterReducer.characterPosition;
   });
 
+  const isTileSelectionOpen = useSelector((state: RootState) => {
+    return state.EditModeReducer.isTileSelectionOpen;
+  });
+
   let interval;
 
   useEffect(() => {
@@ -61,8 +65,14 @@ export function ClickListener() {
     if(event.keyCode === KEYMAP.INTERACT) {
       onSimpleInteract();
     } else if (event.keyCode === KEYMAP.INVENTORY) {
+      if(isTileSelectionOpen) {
+        return;
+      }
       onToggleInventory();
     } else if (event.keyCode === KEYMAP.TILE_SELECTION) {
+      if(isTileSelectionOpen) {
+        return;
+      }
       onToggleTileSelection();
     } else {
       let index = characterRef.current.keysDown.findIndex(item => item === event.keyCode);

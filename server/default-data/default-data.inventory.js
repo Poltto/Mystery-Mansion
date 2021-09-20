@@ -2,7 +2,7 @@ async function initInventory() {
 
   const Inventory = require('../models/models.inventory.js');
 
-  Inventory.create({
+  await Inventory.create({
     inventoryItems: []
   })
 }

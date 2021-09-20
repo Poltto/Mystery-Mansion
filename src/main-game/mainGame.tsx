@@ -7,6 +7,7 @@ import { ACTIONS } from '../redux/actions';
 import { useEffect } from 'react';
 import { Item } from '../endpoints/endpoint.item';
 import {RootState} from "../redux/reducers";
+import { ItemSlot } from '../endpoints/endpoint.item-slot';
 
 export function MainGame(props) {
   const dispatch = useDispatch();
@@ -33,6 +34,14 @@ export function MainGame(props) {
       result.json().then((jsonResult) => {
         let newItems = ItemCreator(jsonResult);
         let action = ACTIONS.ITEM_ACTIONS.ADD_ITEMS(newItems);
+        dispatch(action);
+      });
+    });
+
+    ItemSlot.get().then((result) => {
+      result.json().then((jsonResult) => {
+        console.log(jsonResult);
+        let action = ACTIONS.ITEM_ACTIONS.INIT_ITEM_SLOTS(jsonResult);
         dispatch(action);
       });
     });

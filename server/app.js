@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 require('./routes/routes.game-object.js')(app);
 require('./routes/routes.item.js')(app);
+require('./routes/routes.item-slot.js')(app);
 const sequelize = new Sequelize('game', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',

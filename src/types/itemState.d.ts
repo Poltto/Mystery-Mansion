@@ -6,12 +6,10 @@ export interface IItemState {
   items: {
     [id: number]: IItem
   };
-  inventoryItems: {
-    [id: number]: IInventoryItem
-  };
+  inventoryItems: IInventoryItem[];
   inventory: {
     isOpen: boolean,
     itemSlots: IItemSlot[]
-  };
+  }
 
 }

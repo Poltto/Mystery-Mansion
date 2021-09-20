@@ -127,12 +127,18 @@ export function ClickListener() {
     } else if(interactedItem?.props.onInteract) {
       if(interactedItem.props.onInteract === INTERACTIONS.PICK_UP_ITEM) {
         Item.pickUpItem({itemId: interactedItem.props.id}).then((result) => {
-          console.log("Success", result);
+          result.json().then(jsonResult => {
+            let itemAction = ACTIONS.ITEM_ACTIONS.ADD_INVENTORY_ITEM(jsonResult.inventoryItem);
+            let itemSlotAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEM_SLOT(jsonResult.itemSlot);
+            dispatch(itemAction);
+            dispatch(itemSlotAction);
+          })
         }, (error) => {
           console.log("Error", error);
         });
+      } else {
+        dispatch(ITEM_INTERACTIONS[interactedItem.props.onInteract]([interactedItem]));
       }
-      dispatch(ITEM_INTERACTIONS[interactedItem.props.onInteract]([interactedItem]));
     }
   }
 

@@ -9,12 +9,8 @@ import { IInventoryItem } from 'Types/inventoryItem';
 let cloneDeep = require('lodash/cloneDeep');
 let initialItemSlots: IItemSlot[] = [];
 
-for(let i = 0; i < 36; i++) {
-  initialItemSlots.push({id: i, inventoryItem: null, selected: false, focused: false});
-}
 
-
-export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], inventory: {isOpen: false, itemSlots: initialItemSlots}}, action) {
+export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], inventory: {isOpen: false, itemSlots: []}}, action) {
   if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.OPEN) {
     return {
       ...state,
@@ -65,11 +61,15 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
       items: existingItems
     };
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.ADD_INVENTORY_ITEM) {
+    console.log(action.payload);
     let existingInventoryItems = cloneDeep(state.inventoryItems) as IInventoryItem[];
+    let existingItems = cloneDeep(state.items);
+    existingItems[action.payload.item.id].isInInventory = true;
     existingInventoryItems[action.payload.id] = action.payload;
     return {
       ...state,
-      inventoryItems: existingInventoryItems
+      inventoryItems: existingInventoryItems,
+      items: existingItems
     };
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.REMOVE_INVENTORY_ITEM) {
     let existingInventoryItems = cloneDeep(state.inventoryItems) as IInventoryItem[];
@@ -82,65 +82,42 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
     // let firstAvailableSlotIndex = state.inventory.itemSlots.findIndex(slot => !slot.inventoryItem?.item);
     // let availableItemSlots = state.inventory.itemSlots.filter(slot => !slot.inventoryItem?.item);
     // let newSlots = cloneDeep(state.inventory.itemSlots);
+    let newInventoryItem = action.payload.inventoryItem;
+    let newItemSlot = action.payload.itemSlot;
+    let pickedUpitem = action.payload.item;
     let interactedItemIds = action.payload.interactedItemIds;
     let existingItems: IExistingItems = cloneDeep(state.items);
-    // let inventoryItems = cloneDeep(state.inventoryItems);
-    for (let id of interactedItemIds) {
-      existingItems[id].props.isInInventory = true;
-      existingItems[id].props.positionX = 9999;
-      existingItems[id].props.positionY = 9999;
-    }
-    return {
-      ...state,
-      items: existingItems,
-    };
-  } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.FOCUS_ITEM_SLOT) {
-    let newInventory = cloneDeep(state.inventory);
-    let indexOfOldFocus = newInventory.itemSlots.findIndex(slot => slot.focused);
-    let indexOfNewFocus = newInventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
-    if(indexOfOldFocus > -1) {
-      newInventory.itemSlots[indexOfOldFocus].focused = false;
-    }
-    if(indexOfNewFocus > -1) {
-      newInventory.itemSlots[indexOfNewFocus].focused = true;
-    }
+    let existingInventoryItems = [...state.inventoryItems];
+    existingInventoryItems.push(action.payload.inventoryItem);
+
+    existingItems[pickedUpitem.id].props.isInInventory = true;
+    existingItems[pickedUpitem.id].props.positionX = 9999;
+    existingItems[pickedUpitem.id].props.positionY = 9999;
+
 
     return {
       ...state,
-      inventory: newInventory
-    };
-  } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE_SELECTED_ON_ITEM_SLOT) {
-    let newInventory = cloneDeep(state.inventory);
-    let index = newInventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
-    if(index > -1) {
-      newInventory.itemSlots[index].selected = !newInventory.itemSlots[index].selected;
-    }
-    return {
-      ...state,
-      inventory: newInventory
+      items: existingItems,
+      inventoryItems: existingInventoryItems
     };
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.COMBINE) {
-    let combination: ICombination = action.payload.combination;
-    let inventory = cloneDeep(state.inventory);
-    let items = cloneDeep(state.items);
-    let itemSlotsUsed = inventory.itemSlots.filter(itemSlot => {
-      return combination.itemIds.includes(itemSlot.inventoryItem?.item?.id);
-    });
-    itemSlotsUsed.forEach(itemSlot => {
-      itemSlot.inventoryItem.item.isInInventory = false;
-      itemSlot.inventoryItem.item.itemSlotId = null;
-      itemSlot.inventoryItem = null;
-      itemSlot.selected = false;
-      itemSlot.focused = false;
-    });
-    let firstAvailableSlotIndex = inventory.itemSlots.findIndex(slot => !slot.inventoryItem?.item);
-    if(firstAvailableSlotIndex > -1) {
-      inventory.itemSlots[firstAvailableSlotIndex].inventoryItem = {
-        item: items[combination.result.id],
-        itemSlot: inventory.itemSlots[firstAvailableSlotIndex]
-      };
+    let oldItemSlots = action.payload.oldItemSlots;
+    let newItemSlot = action.payload.itemSlot;
+    let newItem = action.payload.newItem;
+
+    let inventory = state.inventory;
+    let items = state.items;
+
+    for(let oldItem of action.payload.oldItems) {
+      items[oldItem.id] = oldItem;
     }
-    items[combination.result.id].isInInventory = true;
+
+    for(let oldItemSlot of oldItemSlots) {
+      inventory.itemSlots[oldItemSlot.id] = oldItemSlot;
+    }
+    inventory.itemSlots[newItemSlot.id] = newItemSlot;
+    items[newItem.id] = newItem;
+
 
     return {
       ...state,
@@ -163,9 +140,50 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
       ...state,
       inventory: newInventory
     };
-  } else {
-    return state;
+  } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.INIT_ITEM_SLOTS) {
+    let inventory = cloneDeep(state.inventory);
+    inventory.itemSlots = action.payload.itemSlots;
+    return {
+      ...state,
+      inventory
+    };
+  } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.FOCUS_ITEM_SLOT) {
+    let inventory = cloneDeep(state.inventory);
+    let indexOfOldFocus = inventory.itemSlots.findIndex(slot => slot.focused);
+    let indexOfNewFocus = inventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
+    if(indexOfOldFocus > -1) {
+      inventory.itemSlots[indexOfOldFocus].focused = false;
+    }
+    if(indexOfNewFocus > -1) {
+      inventory.itemSlots[indexOfNewFocus].focused = true;
+    }
+    return {
+      ...state,
+      inventory
+    };
+  } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE_SELECTED_ITEM_SLOT) {
+    let inventory = cloneDeep(state.inventory);
+    let index = inventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
+    if(index > -1) {
+      inventory.itemSlots[index].selected = !inventory.itemSlots[index].selected;
+    }
+    return {
+      ...state,
+      inventory
+    };
+  } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.UPDATE_ITEM_SLOT) {
+    let inventory = cloneDeep(state.inventory);
+    let index = inventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
+    console.log(action.payload, inventory);
+    if(index > -1) {
+      inventory.itemSlots[index] = action.payload.itemSlot;
+    }
+    return {
+      ...state,
+      inventory
+    }
   }
+  return state;
 
 
   function putItemInFirstAvailableItemSlot(item: IItem, itemSlots: IItemSlot[]) {

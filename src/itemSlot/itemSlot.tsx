@@ -38,17 +38,12 @@ const ItemSlot = (props) => {
 
   function focusItemSlot() {
     let action;
+    console.log(props);
     if(props.focused) {
-      action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT(props);
+      action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ITEM_SLOT(props);
     } else {
       action = ACTIONS.ITEM_ACTIONS.FOCUS_ITEM_SLOT(props);
     }
-    dispatch(action);
-    return;
-  }
-
-  function toggleSelected() {
-    let action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT(props);
     dispatch(action);
     return;
   }

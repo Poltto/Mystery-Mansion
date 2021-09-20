@@ -5,6 +5,8 @@ module.exports = app => {
 
   app.post('/api/item/pickUpItem', ItemController.pickUpItem);
 
+  app.post('/api/item/combine', ItemController.combine);
+
   app.get('/api/item', ItemController.get);
 
   app.get('/api/item/:id', ItemController.get);

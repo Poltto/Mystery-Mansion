@@ -5,32 +5,34 @@ import ItemSlot from '../itemSlot/itemSlot';
 import { ItemCombiner } from '../item-combiner/itemCombiner';
 import { ICombination } from 'Types/combination';
 import {RootState} from "../redux/reducers";
+import { Item } from '../endpoints/endpoint.item';
 export function Inventory() {
   let itemCombiner = new ItemCombiner();
   const inventory = useSelector((state: RootState) => {
     return state.ItemReducer.inventory;
   });
+  const inventoryItems = useSelector((state: RootState) => {
+    return state.ItemReducer.inventoryItems;
+  })
+
   const dispatch = useDispatch();
 
-  let itemSlots = inventory.itemSlots.map(slot => {
+  console.log(inventory.itemSlots);
+  let itemSlotElements = inventory.itemSlots?.map(slot => {
+
     return <ItemSlot key={slot.id} id={slot.id} inventoryItem={slot.inventoryItem} selected={slot.selected} focused={slot.focused}/>;
   });
 
-  function toggleSelectedOnItemSlot(itemSlot) {
-    let action = ACTIONS.ITEM_ACTIONS.TOGGLE_SELECTED_ON_ITEM_SLOT(itemSlot);
-    dispatch(action);
-    return;
-  }
-
   function combine() {
-    let selectedItemSlots = inventory.itemSlots.filter(itemSlot => {
-      return itemSlot.selected && itemSlot.inventoryItem?.item?.id;
-    });
+    let selectedItemSlotIds = inventory.itemSlots.filter(itemSlot => {
+      return itemSlot.selected;
+    }).map(itemSlot => itemSlot.id);
 
-    let foundCombination: ICombination = itemCombiner.getCombination(selectedItemSlots);
-    let action = ACTIONS.ITEM_ACTIONS.COMBINE(foundCombination);
-    dispatch(action);
-    return;
+    Item.combine(selectedItemSlotIds).then(result => result.json().then(resultJson => {
+      console.log("ResultJSON: ", resultJson);
+      let action = ACTIONS.ITEM_ACTIONS.COMBINE(resultJson);
+      dispatch(action);
+    }))
   }
 
 
@@ -39,7 +41,7 @@ export function Inventory() {
     <div className={inventory?.isOpen ? 'inventory-wrapper is-open' : 'inventory-wrapper'}>
       <div className={'inventory-container'}>
         <div className={'inventory-slot-wrapper'}>
-          {itemSlots}
+          {itemSlotElements}
         </div>
 
         <div className={'combiner-wrapper'}>

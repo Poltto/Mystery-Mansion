@@ -29,6 +29,18 @@ export class Item {
     return fetch(this.urlPrefix + '/api/item/pickUpItem', options);
   }
 
+  public static combine(itemSlotIds: number[]) {
+    let options = {
+      'method': 'POST',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({itemSlotIds})
+    };
+    return fetch(this.urlPrefix + '/api/item/combine', options);
+
+  }
+
   constructor() {
 
   }

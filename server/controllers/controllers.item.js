@@ -1,8 +1,10 @@
-
 let ItemController = () => {
   let Item = require('../models/models.item.js');
   let Inventory = require('../models/models.inventory.js');
   let InventoryItem = require('../models/models.inventory-item.js');
+  let ItemSlot = require('../models/models.item-slot.js');
+  let ItemCombiner = require('../helpers/itemCombiner.js');
+  const { Op } = require("sequelize");
 
   return {
     create: (req, res) => {
@@ -59,10 +61,22 @@ let ItemController = () => {
 
     pickUpItem: async (req, res) => {
       let promises;
-      let inventoryPromise = Inventory.findByPk(1);
+      let inventoryPromise = Inventory.findOne({
+        where: {
+          id: 1
+        }
+      });
+      let itemSlotPromise = ItemSlot.findOne({
+        where: {
+          inventoryId: 1,
+          inventoryItemId: null
+        },
+        include: InventoryItem
+      });
       let itemPromise = Item.findByPk(req.body.itemId);
       let inventory;
       let item;
+      let itemSlot;
 
       inventoryPromise.then(result => {
         inventory = result;
@@ -72,15 +86,108 @@ let ItemController = () => {
         item = result;
       })
 
-      promises = [inventoryPromise, itemPromise];
+      itemSlotPromise.then(result => {
+        itemSlot = result;
+      })
+
+      promises = [inventoryPromise, itemPromise, itemSlotPromise];
       Promise.allSettled(promises).then( async (result) => {
         item.isInInventory = true;
-        console.log("ITEMID: ", item.id);
-        let inventoryItem = await InventoryItem.create();
-        inventoryItem.setItem(item);
-        inventoryItem.setInventory(inventory);
-        let inventoryItemResult = {item, inventory};
-        res.send(inventoryItemResult);
+        let inventoryItem = await InventoryItem.create({
+          itemId: item.id,
+          inventoryId: inventory.id
+        });
+        let inventoryItemData = inventoryItem.get();
+        await itemSlot.setInventoryItem(inventoryItem);
+        let itemSlotData = itemSlot.get();
+        inventoryItemData.item = item;
+        itemSlotData.inventoryItem = inventoryItemData;
+
+        let resultObject = {
+          itemSlot: itemSlotData,
+          item,
+          inventoryItem: inventoryItemData
+        };
+        res.send(resultObject);
+      });
+    },
+
+    combine: async (req, res) => {
+      let promises;
+      let oldItemSlots;
+      let inventoryPromise = Inventory.findByPk(1);
+      let itemSlotPromise = ItemSlot.findAll({
+        where: {
+          id: {
+            [Op.in]: req.body.itemSlotIds
+          }
+        },
+        include: [
+          {
+            model: InventoryItem,
+            include: [{
+              model: Item
+            }]
+          }]
+      });
+      let inventory;
+
+      inventoryPromise.then(result => {
+        inventory = result;
+      })
+
+      itemSlotPromise.then(result => {
+        oldItemSlots = result;
+      })
+
+      promises = [inventoryPromise, itemSlotPromise];
+      Promise.allSettled(promises).then( async (result) => {
+        let inventoryItems = oldItemSlots.map(itemSlot => itemSlot.InventoryItem);
+        let oldItems = inventoryItems.map(inventoryItem => inventoryItem.Item);
+        let itemIds = oldItems.map(item => item.id);
+        let combinationItemId = ItemCombiner(itemIds);
+        if(combinationItemId) {
+          let newItem = await Item.findByPk(combinationItemId);
+          let newInventoryItem = await InventoryItem.create({
+            itemId: newItem.id,
+            inventoryId: inventory.id
+          });
+          for(let oldInventoryItem of inventoryItems) {
+            await oldInventoryItem.destroy();
+          }
+          for(let oldItemSlot of oldItemSlots) {
+            oldItemSlot.inventoryItem = null;
+            oldItemSlot.selected = false;
+            oldItemSlot.focused = false;
+          }
+
+          for(let oldItem of oldItems) {
+            oldItem.deleted = true;
+          }
+
+          let firstAvailableItemSlot = await ItemSlot.findOne({
+            where: {
+              inventoryItemId: null
+            }
+          });
+
+          firstAvailableItemSlot.setInventoryItem(newInventoryItem);
+          let itemSlot = await firstAvailableItemSlot.get();
+          let inventoryItem = await firstAvailableItemSlot.getInventoryItem();
+          inventoryItem.item = newItem;
+          itemSlot.inventoryItem = inventoryItem;
+          let returnItemSlot = {
+            oldItemSlots,
+            itemSlot,
+            oldItems,
+            inventoryItem,
+            newItem
+          }
+
+          res.send(returnItemSlot);
+        } else {
+
+        }
       });
     }
   };

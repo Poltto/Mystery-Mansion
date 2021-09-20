@@ -5,6 +5,7 @@ function initModels(sequelize) {
   const Item = require('../models/models.item.js');
   const InventoryItem = require('../models/models.inventory-item.js');
   const Inventory = require('../models/models.inventory.js');
+  const ItemSlot = require('../models/models.item-slot.js');
 
   Item.init({
     positionX: DataTypes.INTEGER,
@@ -42,9 +43,25 @@ function initModels(sequelize) {
     sequelize
   })
 
-  InventoryItem.belongsTo(Inventory, {foreignKey: 'inventoryId', as: 'Inventory'});
-  InventoryItem.belongsTo(Item, {foreignKey: 'itemId', as: 'Item'});
+  ItemSlot.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
+    selected: {
+      type: DataTypes.BOOLEAN
+    },
+    focused: {
+      type: DataTypes.BOOLEAN
+    }
+  }, {
+    sequelize
+  })
 
+  InventoryItem.belongsTo(Inventory, {foreignKey: 'inventoryId'});
+  InventoryItem.belongsTo(Item, {foreignKey: 'itemId'});
+  ItemSlot.belongsTo(InventoryItem, {foreignKey: 'inventoryItemId'});
+  ItemSlot.belongsTo(Inventory, {foreignKey: 'inventoryId'})
 
   GameObject.init({
     positionX: DataTypes.INTEGER,
@@ -62,13 +79,15 @@ function initModels(sequelize) {
   });
 }
 
-function initData() {
+async function initData() {
   let initGameObjects = require('./default-data.game-object.js');
   let initItems = require('./default-data.item.js');
   let initInventory = require('./default-data.inventory.js');
+  let initItemSlots = require('./default-data.item-slot.js');
   initGameObjects();
   initItems();
-  initInventory();
+  await initInventory();
+  initItemSlots();
 }
 
 

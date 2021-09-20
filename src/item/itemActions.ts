@@ -15,10 +15,12 @@ export const ITEM_ACTIONS = {
     CLOSE: 'CLOSE',
     TOGGLE: 'TOGGLE',
     PICK_UP_ITEM: 'PICK_UP_ITEM',
-    FOCUS_ITEM_SLOT: 'FOCUS_ITEM_SLOT',
-    TOGGLE_SELECTED_ON_ITEM_SLOT: 'TOGGLE_SELECTED_ON_ITEM_SLOT',
     COMBINE: 'COMBINE',
-    CHANGE_ITEM_SLOT: 'CHANGE_ITEM_SLOT'
+    CHANGE_ITEM_SLOT: 'CHANGE_ITEM_SLOT',
+    INIT_ITEM_SLOTS: 'INIT_ITEM_SLOTS',
+    UPDATE_ITEM_SLOT: 'UPDATE_ITEM_SLOT',
+    TOGGLE_SELECTED_ITEM_SLOT: 'TOGGLE_SELECTED',
+    FOCUS_ITEM_SLOT: 'FOCUS'
   },
   CHANGE_ITEM_SLOT: (targetId: number, inventoryItem: IInventoryItem) => {
     return {
@@ -30,29 +32,15 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  COMBINE: (combination: ICombination) => {
+  COMBINE: ({oldItemSlots, itemSlot, oldItems, inventoryItem, newItem}) => {
     return {
       type: ITEM_ACTIONS.ENUMS.COMBINE,
       payload: {
-        combination
-      }
-    };
-  },
-
-  TOGGLE_SELECTED_ON_ITEM_SLOT: (itemSlot) => {
-    return {
-      type: ITEM_ACTIONS.ENUMS.TOGGLE_SELECTED_ON_ITEM_SLOT,
-      payload: {
-        itemSlot
-      }
-    };
-  },
-
-  FOCUS_ITEM_SLOT: (itemSlot) => {
-    return {
-      type: ITEM_ACTIONS.ENUMS.FOCUS_ITEM_SLOT,
-      payload: {
-        itemSlot
+        oldItemSlots,
+        itemSlot,
+        oldItems,
+        inventoryItem,
+        newItem
       }
     };
   },
@@ -117,6 +105,38 @@ export const ITEM_ACTIONS = {
   CLOSE: () => {
     return {
       type: ITEM_ACTIONS.ENUMS.CLOSE
+    };
+  },
+  INIT_ITEM_SLOTS: (itemSlots) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.INIT_ITEM_SLOTS,
+      payload: {
+        itemSlots
+      }
+    };
+  },
+  UPDATE_ITEM_SLOT: (itemSlot) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.UPDATE_ITEM_SLOT,
+      payload: {
+        itemSlot
+      }
+    }
+  },
+  TOGGLE_SELECTED_ITEM_SLOT: (itemSlot) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.TOGGLE_SELECTED_ITEM_SLOT,
+      payload: {
+        itemSlot
+      }
+    };
+  },
+  FOCUS_ITEM_SLOT: (itemSlot) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.FOCUS_ITEM_SLOT,
+      payload: {
+        itemSlot
+      }
     };
   }
 

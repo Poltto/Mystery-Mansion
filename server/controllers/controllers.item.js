@@ -164,7 +164,7 @@ let ItemController = () => {
           for(let oldItem of oldItems) {
             oldItem.deleted = true;
           }
-
+a
           let firstAvailableItemSlot = await ItemSlot.findOne({
             where: {
               inventoryItemId: null

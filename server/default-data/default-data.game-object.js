@@ -1,5 +1,5 @@
-const OBSTACLE_STATICS = require('../../src/helpers/statics.obstacles.ts');
-const INTERACTIONS = require('../../src/helpers/interactions.game-object.ts');
+const OBSTACLE_STATICS = require('../helpers/statics.obstacles.js');
+const INTERACTIONS = require('../helpers/statics.interactions.js');
 async function initGameObjects(sequelize) {
   const GAME_OBJECTS = [
       // {

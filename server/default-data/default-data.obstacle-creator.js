@@ -1,4 +1,4 @@
-const OBSTACLE_STATICS = require('../../src/helpers/statics.obstacles.ts');
+const OBSTACLE_STATICS = require('../helpers/statics.obstacles.js');
 
 function DefaultDataObstacleCreator(options) {
   function createObstacles() {

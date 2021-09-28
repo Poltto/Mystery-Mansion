@@ -62,7 +62,8 @@ let server;
 async function startServer() {
   server = new ApolloServer({
     modules: [
-      require('./graphql/graphql-gameObject')
+      require('./graphql/typedefs/graphql.typedefs.game-object'),
+      require('./graphql/typedefs/graphql.typedefs.item')
     ]
   });
   await server.start();

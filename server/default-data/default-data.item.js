@@ -1,4 +1,4 @@
-let INTERACTIONS = require('../../src/helpers/statics.interactions.ts');
+let INTERACTIONS = require('../helpers/statics.interactions.js');
 
 const Item = require('../models/models.item.js');
 

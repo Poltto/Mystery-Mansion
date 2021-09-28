@@ -17,7 +17,6 @@ export function Inventory() {
 
   const dispatch = useDispatch();
 
-  console.log(inventory.itemSlots);
   let itemSlotElements = inventory.itemSlots?.map(slot => {
 
     return <ItemSlot key={slot.id} id={slot.id} inventoryItem={slot.inventoryItem} selected={slot.selected} focused={slot.focused}/>;

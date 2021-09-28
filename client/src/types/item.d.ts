@@ -1,4 +1,8 @@
 export interface IItem {
+  props: IItemProps
+}
+
+export interface IItemProps {
   name: string;
   image: string;
   isInInventory: boolean;
@@ -6,7 +10,6 @@ export interface IItem {
   positionY: number;
   id: number;
   onInteract?: string;
-  itemSlotId?: number;
 }
 
 export interface IItemElement {

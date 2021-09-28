@@ -28,6 +28,23 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
         isOpen: false
       }
     };
+  } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.UPDATE_ITEMS) {
+    let existingItems = {...state.items};
+    for(let item of action.payload) {
+      if(item.props) {
+        existingItems[item.id] = item;
+      } else {
+        for(let key in item) {
+          existingItems[item.id].props[key] = item[key];
+        }
+      }
+    }
+
+    return {
+      ...state,
+      items: existingItems
+    }
+
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE) {
     return {
       ...state,
@@ -38,8 +55,8 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
     };
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.SET_POSITION) {
     let items = state.items;
-    items[action.payload.id].positionX = action.payload.positionX;
-    items[action.payload.id].positionY = action.payload.positionY;
+    items[action.payload.id].props.positionX = action.payload.positionX;
+    items[action.payload.id].props.positionY = action.payload.positionY;
     return {
       ...state,
       items
@@ -79,26 +96,16 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
       inventoryItems: existingInventoryItems
     };
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.PICK_UP_ITEM) {
-    // let firstAvailableSlotIndex = state.inventory.itemSlots.findIndex(slot => !slot.inventoryItem?.item);
-    // let availableItemSlots = state.inventory.itemSlots.filter(slot => !slot.inventoryItem?.item);
-    // let newSlots = cloneDeep(state.inventory.itemSlots);
-    let newInventoryItem = action.payload.inventoryItem;
-    let newItemSlot = action.payload.itemSlot;
-    let pickedUpitem = action.payload.item;
-    let interactedItemIds = action.payload.interactedItemIds;
     let existingItems: IExistingItems = cloneDeep(state.items);
-    let existingInventoryItems = [...state.inventoryItems];
-    existingInventoryItems.push(action.payload.inventoryItem);
-
-    existingItems[pickedUpitem.id].props.isInInventory = true;
-    existingItems[pickedUpitem.id].props.positionX = 9999;
-    existingItems[pickedUpitem.id].props.positionY = 9999;
-
+    for(let id of action.payload.interactedItemIds) {
+      existingItems[id].props.isInInventory = true;
+      existingItems[id].props.positionX = 9999;
+      existingItems[id].props.positionY = 9999;
+    }
 
     return {
       ...state,
-      items: existingItems,
-      inventoryItems: existingInventoryItems
+      items: existingItems
     };
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.COMBINE) {
     let oldItemSlots = action.payload.oldItemSlots;
@@ -174,7 +181,6 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.UPDATE_ITEM_SLOT) {
     let inventory = cloneDeep(state.inventory);
     let index = inventory.itemSlots.findIndex(slot => slot.id === action.payload.itemSlot.id);
-    console.log(action.payload, inventory);
     if(index > -1) {
       inventory.itemSlots[index] = action.payload.itemSlot;
     }

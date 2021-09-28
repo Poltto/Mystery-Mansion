@@ -1,4 +1,4 @@
-import { IItem, IItemElement } from 'Types/item';
+import { IItem, IItemElement, IItemProps } from 'Types/item';
 import { IExistingItems } from 'Types/existingItems';
 import { ICombination } from 'Types/combination';
 import { IInventoryItem } from 'Types/inventoryItem';
@@ -14,6 +14,7 @@ export const ITEM_ACTIONS = {
     OPEN: 'OPEN',
     CLOSE: 'CLOSE',
     TOGGLE: 'TOGGLE',
+    UPDATE_ITEMS: 'UPDATE_ITEMS',
     PICK_UP_ITEM: 'PICK_UP_ITEM',
     COMBINE: 'COMBINE',
     CHANGE_ITEM_SLOT: 'CHANGE_ITEM_SLOT',
@@ -73,19 +74,18 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  REMOVE_INVENTORY_ITEM: (inventoryItem) => {
+  REMOVE_INVENTORY_ITEM: (inventoryItem: IItem|IItemProps) => {
     return {
       type: ITEM_ACTIONS.ENUMS.REMOVE_INVENTORY_ITEM,
       payload: inventoryItem
     };
   },
 
-  PICK_UP_ITEM: (interactedItems: IItemElement[]) => {
-    let itemsNotInInventory = interactedItems.filter(item => !item.props.isInInventory).map(item => item.props.id);
+  PICK_UP_ITEM: (interactedItemIds) => {
     return {
       type: ITEM_ACTIONS.ENUMS.PICK_UP_ITEM,
       payload: {
-        interactedItemIds: itemsNotInInventory
+        interactedItemIds: interactedItemIds
       }
     };
   },
@@ -95,7 +95,12 @@ export const ITEM_ACTIONS = {
       type: ITEM_ACTIONS.ENUMS.TOGGLE
     };
   },
-
+  UPDATE_ITEMS: (item) => {
+    return {
+      type: ITEM_ACTIONS.ENUMS.UPDATE_ITEMS,
+      payload: item
+    };
+  },
   OPEN: () => {
     return {
       type: ITEM_ACTIONS.ENUMS.OPEN

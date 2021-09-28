@@ -2,6 +2,8 @@
 const {gql} = require('apollo-server-express');
 let Item = require('../../models/models.item.js');
 let ItemSlot = require('../../models/models.item-slot.js');
+let Inventory = require('../../models/models.inventory.js');
+let InventoryItem = require('../../models/models.inventory-item.js');
 
 const typeDefs = gql`
   extend type Query {
@@ -16,7 +18,7 @@ const typeDefs = gql`
     createItem(input: ItemInput): Item
     updateItem(id: ID!, input: ItemInput): Item
     combine(itemSlotIds: [ID]!): Item
-    pickUpItem(id: ID!): Item
+    pickUpItem(id: ID!): ItemSlot
   }
   
   input ItemInput {
@@ -41,7 +43,6 @@ const typeDefs = gql`
   type InventoryItem {
     id: ID!
     item: Item,
-    inventory: Inventory
   }
   
   type Inventory {
@@ -101,7 +102,7 @@ const resolvers = {
         },
         include: InventoryItem
       });
-      let itemPromise = Item.findByPk(data.itemId);
+      let itemPromise = Item.findByPk(data.id);
       let inventory;
       let item;
       let itemSlot;
@@ -119,25 +120,21 @@ const resolvers = {
       })
 
       promises = [inventoryPromise, itemPromise, itemSlotPromise];
-      Promise.allSettled(promises).then( async (result) => {
-        item.isInInventory = true;
-        let inventoryItem = await InventoryItem.create({
-          itemId: item.id,
-          inventoryId: inventory.id
-        });
-        let inventoryItemData = inventoryItem.get();
-        await itemSlot.setInventoryItem(inventoryItem);
-        let itemSlotData = itemSlot.get();
-        inventoryItemData.item = item;
-        itemSlotData.inventoryItem = inventoryItemData;
-
-        let resultObject = {
-          itemSlot: itemSlotData,
-          item,
-          inventoryItem: inventoryItemData
-        };
-        res.send(resultObject);
+      let result = await Promise.allSettled(promises);
+      item.isInInventory = true;
+      item.positionX = 9999;
+      item.positionY = 9999;
+      let inventoryItem = await InventoryItem.create({
+        itemId: item.id,
+        inventoryId: inventory.id
       });
+      let inventoryItemData = inventoryItem.get();
+      await itemSlot.setInventoryItem(inventoryItem);
+      let itemSlotData = itemSlot.get();
+      inventoryItemData.item = item;
+      itemSlotData.inventoryItem = inventoryItemData;
+
+      return itemSlotData;
     },
     combine: async(_, data) => {
       let inventoryPromise = Inventory.findByPk(1);

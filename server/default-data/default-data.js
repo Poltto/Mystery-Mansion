@@ -58,7 +58,6 @@ function initModels(sequelize) {
     sequelize
   })
 
-  InventoryItem.belongsTo(Inventory, {foreignKey: 'inventoryId'});
   InventoryItem.belongsTo(Item, {foreignKey: 'itemId'});
   ItemSlot.belongsTo(InventoryItem, {foreignKey: 'inventoryItemId'});
   ItemSlot.belongsTo(Inventory, {foreignKey: 'inventoryId'})

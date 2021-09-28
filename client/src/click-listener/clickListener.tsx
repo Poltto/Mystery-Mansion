@@ -11,14 +11,16 @@ import { ITEM_INTERACTIONS } from 'Helpers/interactions.items';
 import { Item } from '../endpoints/endpoint.item';
 import { KEYMAP } from 'Helpers/statics.keymap';
 import { useLocation } from 'react-router-dom'
-
 import {RootState} from "../redux/reducers";
+import { useMutation } from '@apollo/client';
+const ITEM_MUTATIONS = require('../graphql/mutations/graphql.mutations.item');
+
 const INTERACTIONS = require('Helpers/statics.interactions');
 export function ClickListener() {
   const location = useLocation();
   const dispatch = useDispatch();
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
-
+  const [pickUpItem, {data, loading, error}] = useMutation(ITEM_MUTATIONS.PICK_UP_ITEM, {variables: {id: 1}});
   const obstacles = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles;
   });
@@ -126,15 +128,20 @@ export function ClickListener() {
       dispatch(interactedObstacle.onInteract());
     } else if(interactedItem?.props.onInteract) {
       if(interactedItem.props.onInteract === INTERACTIONS.PICK_UP_ITEM) {
-        Item.pickUpItem({itemId: interactedItem.props.id}).then((result) => {
-          result.json().then(jsonResult => {
-            let itemAction = ACTIONS.ITEM_ACTIONS.ADD_INVENTORY_ITEM(jsonResult.inventoryItem);
-            let itemSlotAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEM_SLOT(jsonResult.itemSlot);
-            dispatch(itemAction);
-            dispatch(itemSlotAction);
-          })
-        }, (error) => {
-          console.log("Error", error);
+        pickUpItem({
+          variables: {
+            id: interactedItem.props.id
+          }
+        }).then((data: any) => {
+          console.log("DATA: ", data.data);
+          let inventoryItemAction = ACTIONS.ITEM_ACTIONS.ADD_INVENTORY_ITEM(data.data.pickUpItem.inventoryItem);
+          let itemSlotAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEM_SLOT(data.data.pickUpItem);
+          let itemAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEMS([data.data.pickUpItem.inventoryItem.item]);
+          dispatch(inventoryItemAction);
+          dispatch(itemSlotAction);
+          dispatch(itemAction);
+        }, error => {
+          console.log("ERROR: ", error);
         });
       } else {
         dispatch(ITEM_INTERACTIONS[interactedItem.props.onInteract]([interactedItem]));
@@ -143,7 +150,6 @@ export function ClickListener() {
   }
 
   function returnPositionInDirection(position: IPoint, direction: string, times: number = 1) {
-    console.log(position, direction, times);
     if(direction === 'up') {
       return {
         positionX: position.positionX,

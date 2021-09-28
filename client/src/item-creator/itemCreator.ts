@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { IItem } from 'Types/item';
+import { IItem, IItemProps } from 'Types/item';
 import { IItemCreatorOptions } from 'Types/itemCreator';
 import { Item } from '../item/item';
 
@@ -10,11 +10,11 @@ export function ItemCreator(itemsFromServer) {
     }, {});
   }
 
-  function processItem(item: IItem): ReactElement {
+  function processItem(item: IItemProps): ReactElement {
     return createItemElement(item);
   }
 
-  function createItemElement(item: IItem) {
+  function createItemElement(item: IItemProps) {
     return React.createElement(Item, {
       positionX: item.positionX,
       positionY: item.positionY,

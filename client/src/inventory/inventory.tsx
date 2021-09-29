@@ -1,13 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../redux/actions';
-import { Obstacle } from '../obstacle/obstacle';
 import ItemSlot from '../itemSlot/itemSlot';
-import { ItemCombiner } from '../item-combiner/itemCombiner';
-import { ICombination } from 'Types/combination';
 import {RootState} from "../redux/reducers";
-import { Item } from '../endpoints/endpoint.item';
 import { useMutation } from '@apollo/client';
-import { useEffect } from 'react';
 const ITEM_MUTATIONS = require('../graphql/mutations/graphql.mutations.item');
 
 export function Inventory() {

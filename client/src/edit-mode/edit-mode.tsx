@@ -9,9 +9,14 @@ import {ItemCreator} from "../item-creator/itemCreator";
 import {useEventListener} from "../use-event-listener";
 import {STATICS} from "../enums/statics";
 import {EditModeTileSelection} from "./edit-mode.tile-selection";
+import { useMutation, useQuery } from '@apollo/client';
+import { GAME_OBJECT_MUTATIONS } from '../graphql/mutations/graphql.mutations.game-object';
+import { GAME_OBJECT_QUERIES } from '../graphql/queries/graphql.queries.game-object';
+import { ITEM_QUERIES } from '../graphql/queries/graphql.queries.item';
 
 export function EditMode() {
 
+    const [createGameObject, {data, loading, error}] = useMutation(GAME_OBJECT_MUTATIONS.CREATE_GAME_OBJECT);
 
     const dispatch = useDispatch();
 
@@ -63,37 +68,36 @@ export function EditMode() {
             positionY: squaresY,
             isBlocking: isBlocking,
             image: selectedTile,
-            onInteract: onInteract,
-            name: name
+            onInteract: onInteract
         }
 
-        GameObject.create(newTile).then(result => {
-            result.json().then(resultJSON => {
-                let newObstacles = ObstacleCreator([resultJSON]);
-                let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES(newObstacles);
-                dispatch(action);
-            })
+        createGameObject({
+            variables: {
+                gameObject: newTile
+            }
+        }).then(result => {
+            let data = result.data.createGameObject;
+            let newObstacles = ObstacleCreator([data]);
+            let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES(newObstacles);
+            dispatch(action);
         })
     });
 
-    useEffect(() => {
-        GameObject.get().then((result) => {
-            result.json().then((jsonResult) => {
-                let newObstacles = ObstacleCreator(jsonResult);
-                let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES(newObstacles);
-                dispatch(action);
-            });
-        });
+    useQuery(GAME_OBJECT_QUERIES.GET_GAME_OBJECTS, {
+        onCompleted: (data) => {
+            let newObstacles = ObstacleCreator(data.gameObjects);
+            let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES(newObstacles);
+            dispatch(action);
+        }
+    })
 
-        Item.get().then((result) => {
-            result.json().then((jsonResult) => {
-                let newItems = ItemCreator(jsonResult);
-                let action = ACTIONS.ITEM_ACTIONS.ADD_ITEMS(newItems);
-                dispatch(action);
-            });
-        });
-    }, []);
-
+    useQuery(ITEM_QUERIES.GET_ITEMS, {
+        onCompleted: (data) => {
+            let newObstacles = ItemCreator(data.items);
+            let action = ACTIONS.ITEM_ACTIONS.ADD_ITEMS(newObstacles);
+            dispatch(action);
+        }
+    })
     return (
         <div className={'edit-mode-container'}>
             <div className={'edit-mode-overlay'}></div>

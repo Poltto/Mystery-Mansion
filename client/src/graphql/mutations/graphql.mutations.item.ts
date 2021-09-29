@@ -1,7 +1,6 @@
-const { gql } = require('@apollo/client');
+import { gql } from '@apollo/client';
 
-const ITEM_FRAGMENTS = require('../fragments/graphql.fragments.item');
-
+import { ITEM_FRAGMENTS } from '../fragments/graphql.fragments.item';
 
 
 const PICK_UP_ITEM = gql`
@@ -35,7 +34,7 @@ const COMBINE = gql`
   }
 `
 
-module.exports = {
+export const ITEM_MUTATIONS = {
   PICK_UP_ITEM,
   COMBINE
-}
+};

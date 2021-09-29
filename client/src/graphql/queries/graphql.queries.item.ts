@@ -1,6 +1,5 @@
-const { gql } = require('@apollo/client');
-const ITEM_FRAGMENTS = require('../fragments/graphql.fragments.item');
-
+import { gql } from '@apollo/client';
+import { ITEM_FRAGMENTS } from '../fragments/graphql.fragments.item';
 const GET_ITEMS = gql`
   ${ITEM_FRAGMENTS.FullItem}
   query GET_ITEMS {
@@ -23,7 +22,7 @@ const GET_ITEM_SLOTS = gql`
 `
 
 
-module.exports = {
+export const ITEM_QUERIES = {
   GET_ITEMS,
   GET_ITEM_SLOTS
 }

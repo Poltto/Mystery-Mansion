@@ -3,7 +3,7 @@ import { ACTIONS } from '../redux/actions';
 import ItemSlot from '../itemSlot/itemSlot';
 import {RootState} from "../redux/reducers";
 import { useMutation } from '@apollo/client';
-const ITEM_MUTATIONS = require('../graphql/mutations/graphql.mutations.item');
+import { ITEM_MUTATIONS } from '../graphql/mutations/graphql.mutations.item';
 
 export function Inventory() {
   const inventory = useSelector((state: RootState) => {

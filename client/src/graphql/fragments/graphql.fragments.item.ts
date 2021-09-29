@@ -1,4 +1,4 @@
-const { gql } = require('@apollo/client');
+import { gql } from '@apollo/client';
 
 const FullItem = gql`
   fragment FullItem on Item {
@@ -32,7 +32,7 @@ const FullItemSlot = gql`
   }
 `;
 
-module.exports = {
+export const ITEM_FRAGMENTS = {
   FullItem,
   FullItemSlot,
   FullInventoryItem

@@ -1,4 +1,4 @@
-const { gql } = require('@apollo/client');
+import { gql } from '@apollo/client';
 
 const GET_GAME_OBJECTS = gql`
   query GET_GAME_OBJECTS {
@@ -13,6 +13,6 @@ const GET_GAME_OBJECTS = gql`
   }
 `
 
-module.exports = {
+export const GAME_OBJECT_QUERIES = {
   GET_GAME_OBJECTS
 }

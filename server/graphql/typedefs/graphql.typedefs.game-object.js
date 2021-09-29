@@ -9,7 +9,7 @@ const typeDefs = gql`
   }
   
   extend type Mutation {
-    createGameObject(input: GameObjectInput): GameObject
+    createGameObject(gameObject: GameObjectInput): GameObject
     updateGameObject(id: ID!, input: GameObjectInput): GameObject
   }
   
@@ -44,12 +44,12 @@ const resolvers = {
   Mutation: {
     createGameObject: async(_, data, dataSources) => {
       const newGameObject = {
-        positionX: data.input.positionX,
-        positionY: data.input.positionY,
-        isBlocking: data.input.isBlocking,
-        image: data.input.image,
-        onInteract: data.input.onInteract,
-        id: data.input.positionX.toString() + data.input.positionY?.toString()
+        positionX: data.gameObject.positionX,
+        positionY: data.gameObject.positionY,
+        isBlocking: data.gameObject.isBlocking,
+        image: data.gameObject.image,
+        onInteract: data.gameObject.onInteract,
+        id: data.gameObject.positionX.toString() + data.gameObject.positionY?.toString()
       };
       return await GameObject.create(newGameObject);
     },

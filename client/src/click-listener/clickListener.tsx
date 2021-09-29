@@ -13,7 +13,7 @@ import { KEYMAP } from 'Helpers/statics.keymap';
 import { useLocation } from 'react-router-dom'
 import {RootState} from "../redux/reducers";
 import { useMutation } from '@apollo/client';
-const ITEM_MUTATIONS = require('../graphql/mutations/graphql.mutations.item');
+import { ITEM_MUTATIONS } from '../graphql/mutations/graphql.mutations.item';
 
 const INTERACTIONS = require('Helpers/statics.interactions');
 export function ClickListener() {

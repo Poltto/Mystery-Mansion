@@ -78,7 +78,6 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
       items: existingItems
     };
   } else if (action.type === ACTIONS.ITEM_ACTIONS.ENUMS.ADD_INVENTORY_ITEM) {
-    console.log(action.payload);
     let existingInventoryItems = cloneDeep(state.inventoryItems) as IInventoryItem[];
     let existingItems = cloneDeep(state.items);
     existingItems[action.payload.item.id].isInInventory = true;
@@ -109,27 +108,24 @@ export function ItemReducer(state: IItemState = {items: {}, inventoryItems: [], 
     };
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.COMBINE) {
     let oldItemSlots = action.payload.oldItemSlots;
-    let newItemSlot = action.payload.itemSlot;
-    let newItem = action.payload.newItem;
+    let newItemSlot = action.payload.newItemSlot;
 
-    let inventory = state.inventory;
-    let items = state.items;
-
-    for(let oldItem of action.payload.oldItems) {
-      items[oldItem.id] = oldItem;
-    }
+    let inventory = {...state.inventory};
 
     for(let oldItemSlot of oldItemSlots) {
-      inventory.itemSlots[oldItemSlot.id] = oldItemSlot;
+      let index = inventory.itemSlots.findIndex(singleSlot => singleSlot.id == oldItemSlot.id);
+      if(index > -1) {
+        inventory.itemSlots[index] = oldItemSlot;
+      }
     }
-    inventory.itemSlots[newItemSlot.id] = newItemSlot;
-    items[newItem.id] = newItem;
+
+    let index = inventory.itemSlots.findIndex(singleSlot => singleSlot.id == newItemSlot.id);
+    inventory.itemSlots[index] = newItemSlot;
 
 
     return {
       ...state,
-      inventory,
-      items
+      inventory
     };
 
   } else if(action.type === ACTIONS.ITEM_ACTIONS.ENUMS.CHANGE_ITEM_SLOT) {

@@ -13,7 +13,29 @@ const PICK_UP_ITEM = gql`
   }
 `;
 
+const COMBINE = gql`
+  ${ITEM_FRAGMENTS.FullItemSlot}
+  ${ITEM_FRAGMENTS.FullItem}
+
+  mutation COMBINE($itemSlotIds: [ID]!) {
+    combine(itemSlotIds: $itemSlotIds) {
+      newItemSlot {
+        ...FullItemSlot
+      }
+      oldItems {
+        ...FullItem
+      }
+      newItem {
+        ...FullItem
+      }
+      oldItemSlots {
+        ...FullItemSlot
+      }
+    }
+  }
+`
 
 module.exports = {
-  PICK_UP_ITEM
+  PICK_UP_ITEM,
+  COMBINE
 }

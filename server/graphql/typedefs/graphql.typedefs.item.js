@@ -4,7 +4,8 @@ let Item = require('../../models/models.item.js');
 let ItemSlot = require('../../models/models.item-slot.js');
 let Inventory = require('../../models/models.inventory.js');
 let InventoryItem = require('../../models/models.inventory-item.js');
-
+const { Op } = require("sequelize");
+let getItemCombination = require('../../helpers/itemCombiner');
 const typeDefs = gql`
   extend type Query {
     items: [Item]
@@ -17,7 +18,7 @@ const typeDefs = gql`
   extend type Mutation {
     createItem(input: ItemInput): Item
     updateItem(id: ID!, input: ItemInput): Item
-    combine(itemSlotIds: [ID]!): Item
+    combine(itemSlotIds: [ID]!): CombineOutput
     pickUpItem(id: ID!): ItemSlot
   }
   
@@ -28,6 +29,13 @@ const typeDefs = gql`
     image: String,
     name: String,
     isInInventory: Boolean
+  }
+  
+  type CombineOutput {
+    newItemSlot: ItemSlot
+    oldItems: [Item]
+    oldItemSlots: [ItemSlot]
+    newItem: Item
   }
   
   type Item {
@@ -164,53 +172,51 @@ const resolvers = {
       })
 
 
-      promises = [inventoryPromise, itemSlotPromise];
-      Promise.allSettled(promises).then( async (result) => {
-        let inventoryItems = oldItemSlots.map(itemSlot => itemSlot.InventoryItem);
-        let oldItems = inventoryItems.map(inventoryItem => inventoryItem.Item);
-        let itemIds = oldItems.map(item => item.id);
-        let combinationItemId = ItemCombiner(itemIds);
-        if(combinationItemId) {
-          let newItem = await Item.findByPk(combinationItemId);
-          let newInventoryItem = await InventoryItem.create({
-            itemId: newItem.id,
-            inventoryId: inventory.id
-          });
-          for (let oldInventoryItem of inventoryItems) {
-            await oldInventoryItem.destroy();
-          }
-          for (let oldItemSlot of oldItemSlots) {
-            oldItemSlot.inventoryItem = null;
-            oldItemSlot.selected = false;
-            oldItemSlot.focused = false;
-          }
-
-          for (let oldItem of oldItems) {
-            oldItem.deleted = true;
-          }
-          a
-          let firstAvailableItemSlot = await ItemSlot.findOne({
-            where: {
-              inventoryItemId: null
-            }
-          });
-
-          firstAvailableItemSlot.setInventoryItem(newInventoryItem);
-          let itemSlot = await firstAvailableItemSlot.get();
-          let inventoryItem = await firstAvailableItemSlot.getInventoryItem();
-          inventoryItem.item = newItem;
-          itemSlot.inventoryItem = inventoryItem;
-          let returnItemSlot = {
-            oldItemSlots,
-            itemSlot,
-            oldItems,
-            inventoryItem,
-            newItem
-          }
-
-          res.send(returnItemSlot);
+      let promises = [inventoryPromise, itemSlotPromise];
+      await Promise.allSettled(promises);
+      let inventoryItems = oldItemSlots.map(itemSlot => itemSlot.InventoryItem);
+      let oldItems = inventoryItems.map(inventoryItem => inventoryItem.Item);
+      let itemIds = oldItems.map(item => item.id);
+      let combinationItemId = getItemCombination(oldItemSlots);
+      if(combinationItemId) {
+        let newItem = await Item.findByPk(combinationItemId);
+        let newInventoryItem = await InventoryItem.create({
+          itemId: newItem.id,
+          inventoryId: inventory.id
+        });
+        for (let oldInventoryItem of inventoryItems) {
+          await oldInventoryItem.destroy();
         }
-      });
+        for (let oldItemSlot of oldItemSlots) {
+          oldItemSlot.inventoryItem = null;
+          oldItemSlot.selected = false;
+          oldItemSlot.focused = false;
+        }
+
+        for (let oldItem of oldItems) {
+          oldItem.deleted = true;
+        }
+
+        let firstAvailableItemSlot = await ItemSlot.findOne({
+          where: {
+            inventoryItemId: null
+          }
+        });
+
+        firstAvailableItemSlot.setInventoryItem(newInventoryItem);
+        let newItemSlot = await firstAvailableItemSlot.get();
+        let inventoryItem = await firstAvailableItemSlot.getInventoryItem();
+        inventoryItem.item = newItem;
+        newItemSlot.inventoryItem = inventoryItem;
+        let returnItemSlot = {
+          oldItemSlots,
+          newItemSlot,
+          oldItems,
+          newItem
+        }
+
+        return returnItemSlot;
+      }
     }
   }
 }

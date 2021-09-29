@@ -20,7 +20,7 @@ export function ClickListener() {
   const location = useLocation();
   const dispatch = useDispatch();
   const characterRef = useRef({keysDown: [], lastMovement: new Date(), movementPhase: 0});
-  const [pickUpItem, {data, loading, error}] = useMutation(ITEM_MUTATIONS.PICK_UP_ITEM, {variables: {id: 1}});
+  const [pickUpItem, {data, loading, error}] = useMutation(ITEM_MUTATIONS.PICK_UP_ITEM);
   const obstacles = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles;
   });
@@ -133,7 +133,6 @@ export function ClickListener() {
             id: interactedItem.props.id
           }
         }).then((data: any) => {
-          console.log("DATA: ", data.data);
           let inventoryItemAction = ACTIONS.ITEM_ACTIONS.ADD_INVENTORY_ITEM(data.data.pickUpItem.inventoryItem);
           let itemSlotAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEM_SLOT(data.data.pickUpItem);
           let itemAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEMS([data.data.pickUpItem.inventoryItem.item]);

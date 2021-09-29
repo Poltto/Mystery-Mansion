@@ -6,19 +6,19 @@ import { ItemCombiner } from '../item-combiner/itemCombiner';
 import { ICombination } from 'Types/combination';
 import {RootState} from "../redux/reducers";
 import { Item } from '../endpoints/endpoint.item';
+import { useMutation } from '@apollo/client';
+import { useEffect } from 'react';
+const ITEM_MUTATIONS = require('../graphql/mutations/graphql.mutations.item');
+
 export function Inventory() {
-  let itemCombiner = new ItemCombiner();
   const inventory = useSelector((state: RootState) => {
     return state.ItemReducer.inventory;
   });
-  const inventoryItems = useSelector((state: RootState) => {
-    return state.ItemReducer.inventoryItems;
-  })
+  const [combineMutation, {data, loading, error}] = useMutation(ITEM_MUTATIONS.COMBINE);
 
   const dispatch = useDispatch();
 
   let itemSlotElements = inventory.itemSlots?.map(slot => {
-
     return <ItemSlot key={slot.id} id={slot.id} inventoryItem={slot.inventoryItem} selected={slot.selected} focused={slot.focused}/>;
   });
 
@@ -27,11 +27,24 @@ export function Inventory() {
       return itemSlot.selected;
     }).map(itemSlot => itemSlot.id);
 
-    Item.combine(selectedItemSlotIds).then(result => result.json().then(resultJson => {
-      console.log("ResultJSON: ", resultJson);
-      let action = ACTIONS.ITEM_ACTIONS.COMBINE(resultJson);
-      dispatch(action);
-    }))
+    combineMutation({
+      variables: {
+        itemSlotIds: selectedItemSlotIds
+      }
+    }).then(result => {
+      let resultData = result.data.combine;
+      let combinePayload = {
+        oldItemSlots: resultData.oldItemSlots,
+        newItemSlot: resultData.newItemSlot
+      }
+      let updateItemsPayload = [...resultData.oldItems, resultData.newItem];
+      let combineAction = ACTIONS.ITEM_ACTIONS.COMBINE(combinePayload);
+      let updateItemsAction = ACTIONS.ITEM_ACTIONS.UPDATE_ITEMS(updateItemsPayload);
+      dispatch(combineAction);
+      dispatch(updateItemsAction);
+    }, error => {
+      console.log(error);
+    })
   }
 
 

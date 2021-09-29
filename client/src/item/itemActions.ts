@@ -33,15 +33,12 @@ export const ITEM_ACTIONS = {
     };
   },
 
-  COMBINE: ({oldItemSlots, itemSlot, oldItems, inventoryItem, newItem}) => {
+  COMBINE: ({oldItemSlots, newItemSlot}) => {
     return {
       type: ITEM_ACTIONS.ENUMS.COMBINE,
       payload: {
         oldItemSlots,
-        itemSlot,
-        oldItems,
-        inventoryItem,
-        newItem
+        newItemSlot
       }
     };
   },

@@ -1,6 +1,6 @@
 import {EDIT_MODE_ACTIONS} from "./actions.edit-mode";
 
-export function EditModeReducer(state = {onInteract: '', tileType: 'gameObject', name: '', selectedTile: null, isTileSelectionOpen: false, isBlocking: true}, action) {
+export function EditModeReducer(state = {isTileCreationOn: false, onInteract: '', tileType: 'gameObject', name: '', selectedTile: null, isTileSelectionOpen: false, isBlocking: true}, action) {
     if(action.type === EDIT_MODE_ACTIONS.ENUMS.SELECT_TILE) {
         let tile = action.payload;
         state.selectedTile = tile;
@@ -16,6 +16,8 @@ export function EditModeReducer(state = {onInteract: '', tileType: 'gameObject',
         state.name = '';
     } else if (action.type === EDIT_MODE_ACTIONS.ENUMS.SET_ON_INTERACT) {
         state.onInteract = action.payload.onInteract;
+    } else if (action.type === EDIT_MODE_ACTIONS.ENUMS.TOGGLE_TILE_CREATION) {
+        state.isTileCreationOn = !state.isTileCreationOn;
     }
     return state;
 

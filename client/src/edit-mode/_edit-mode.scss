@@ -13,6 +13,7 @@
     display: flex;
     justify-content:center;
     align-items: center;
+    z-index: 9999;
     span {
       font-size: 22px;
       cursor: pointer;
@@ -25,18 +26,40 @@
     height: 100%;
   }
 
+  .edit-mode-highlight {
+    background: red;
+    position: absolute;
+    opacity: 0;
+    min-width: calc(var(--square) * var(--zoom-level));
+    min-height: calc(var(--square) * var(--zoom-level));
+  }
+
   .edit-mode-overlay {
     width: 100%;
     height: 100%;
     position: fixed;
     z-index: 9999;
+
+    &.enabled {
+      height: 99999px;
+      width: 99999px;
+      margin: 0;
+      position: absolute;
+
+    }
+    &.enabled {
+      background-image:
+              repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
+              repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%);
+      background-size: calc(var(--square) * var(--zoom-level)) calc(var(--square) * var(--zoom-level));
+    }
   }
 
   .edit-mode-tile-container {
     width: 100%;
-    background: $primary-background;
+    background: var(--primary-background);
     z-index: 9999;
-    position: absolute;
+    position: fixed;
     top: 0;
 
 
@@ -48,6 +71,7 @@
       padding: 12px 8px;
       height: calc(#{$square} * 2);
       display: flex;
+      flex-direction: column;
       border-bottom: 3px solid white;
       opacity: 0.4;
       cursor: pointer;
@@ -60,37 +84,50 @@
         border-bottom: none;
       }
 
-      .edit-mode-tile-container-inner-section {
+      .edit-mode-tile-container-title {
+        width: 100%;
+        font-size: 24px;
+        font-family: var(--text-default);
+      }
+
+      .edit-mode-tile-container-inner-content {
         display: flex;
-        align-items: center;
-        margin: 0 20px;
+        width: 100%;
 
-        .single-obstacle-type {
-          height: $square;
-          width: $square;
-          margin: 5px;
-          position: relative;
-          opacity: 0.8;
-          border: 1px solid grey;
+        .edit-mode-tile-container-inner-section {
+          display: flex;
+          align-items: center;
+          margin: 0 20px;
 
-          cursor: pointer;
+          .single-obstacle-type {
+            height: var(--square);
+            width: var(--square);
+            margin: 5px;
+            position: relative;
+            opacity: 0.8;
+            border: 1px solid grey;
 
-          &:hover {
-            opacity: 1;
-          }
+            cursor: pointer;
 
-          img {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-          }
+            &:hover {
+              opacity: 1;
+            }
 
-          &.selected {
-            opacity: 1;
-            border: 2px solid white;
+            img {
+              object-fit: cover;
+              width: 100%;
+              height: 100%;
+              max-height: var(--square);
+            }
+
+            &.selected {
+              opacity: 1;
+              border: 2px solid white;
+            }
           }
         }
       }
+
 
     }
   }

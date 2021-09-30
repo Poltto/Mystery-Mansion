@@ -1,7 +1,7 @@
 // Hook
 import { useEffect, useRef } from 'react';
 
-export function useEventListener(eventName, handler, element = window){
+export function useEventListener(eventName, handler, element = window, options: AddEventListenerOptions = {}){
   // Create a ref that stores handler
   const savedHandler = useRef();
 
@@ -29,7 +29,7 @@ export function useEventListener(eventName, handler, element = window){
       }
 
       // Add event listener
-      element.addEventListener(eventName, eventListener);
+      element.addEventListener(eventName, eventListener, options);
 
       // Remove event listener on cleanup
       return () => {

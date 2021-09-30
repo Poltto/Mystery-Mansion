@@ -1,6 +1,6 @@
 .character {
-  width: $square;
-  height: $square;
+  width: var(--square);
+  height: var(--square);
   position: absolute;
   left: 0;
   top: 0;

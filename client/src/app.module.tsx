@@ -7,7 +7,6 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
-
 require.context('./assets', true, /\.(png|jpeg|jpg|gif)/);
 require.context('./assets', true, /\.(ttf|svg)/);
 require.context('./icomoon', true, /\.(woff|woff2|eot|ttf)/);

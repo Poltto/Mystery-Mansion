@@ -1,14 +1,14 @@
 .obstacle {
-  height: $square;
-  width: $square;
+  height: calc(var(--square) * var(--zoom-level));
+  width: calc(var(--square) * var(--zoom-level));
   display: flex;
   position: absolute;
   justify-content: center;
   align-items: center;
 
   img {
-    height: $square;
-    width: $square;
+    height: calc(var(--square) * var(--zoom-level));
+    width: calc(var(--square) * var(--zoom-level));
     object-fit: cover;
   }
 }

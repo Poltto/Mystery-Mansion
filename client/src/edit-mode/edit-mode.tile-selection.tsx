@@ -59,9 +59,9 @@ export function EditModeTileSelection() {
         }
     }
 
-    function getTileStyle(type) {
+    function getTileStyle(tile, tileType) {
         let className = 'single-obstacle-type';
-        return selectedTile === type ? className + ' selected' : className;
+        return (selectedTileType === tileType && selectedTile === tile) ? className + ' selected' : className;
     }
 
     function getTileContainerStyle(type: string) {
@@ -80,32 +80,40 @@ export function EditModeTileSelection() {
                 <span className={'icon-cross'} onClick={closeTileSelection}></span>
             </div>
             <div onClick={selectTileType('gameObject')} className={getTileContainerStyle('gameObject')}>
-                <div className={'edit-mode-tile-container-inner-section'} >
-                    {Object.values(obstacleTypes).map((type: string) => {
-                        return <div onClick={selectTile(type)} key={type} className={getTileStyle(type)}><img src={type}/></div>
-                    })}
+                <div className={'edit-mode-tile-container-title'}>
+                    Game-objects
                 </div>
-
-
-
-                <div className={'edit-mode-tile-container-inner-section'}>
-                    <CustomRadio value={isBlocking} setValue={setIsBlocking} direction={'vertical'} values={[true, false]} labels={['Blocking', 'Not blocking']}/>
+                <div className={'edit-mode-tile-container-inner-content'}>
+                    <div className={'edit-mode-tile-container-inner-section'} >
+                        {Object.values(obstacleTypes).map((type: string) => {
+                            return <div onClick={selectTile(type)} key={type} className={getTileStyle(type, 'gameObject')}><img src={type}/></div>
+                        })}
+                    </div>
+                    <div className={'edit-mode-tile-container-inner-section'}>
+                        <CustomRadio value={isBlocking} setValue={setIsBlocking} direction={'vertical'} values={[true, false]} labels={['Blocking', 'Not blocking']}/>
+                    </div>
                 </div>
             </div>
 
 
             <div onClick={selectTileType('item')} className={getTileContainerStyle('item')}>
-                <div className={'edit-mode-tile-container-inner-section'}>
-                    {Object.values(itemTypes).map((type: string) => {
-                        return <div onClick={selectTile(type)} key={type} className={getTileStyle(type)}><img src={type}/></div>
-                    })}
+                <div className={'edit-mode-tile-container-title'}>
+                    Items
                 </div>
-                <div className={'edit-mode-tile-container-inner-section'}>
-                    <CustomInput label={'Name'} value={name} setValue={setName}/>
+                <div className={'edit-mode-tile-container-inner-content'}>
+                    <div className={'edit-mode-tile-container-inner-section'}>
+                        {Object.values(itemTypes).map((type: string) => {
+                            return <div onClick={selectTile(type)} key={type} className={getTileStyle(type, 'item')}><img src={type}/></div>
+                        })}
+                    </div>
+                    <div className={'edit-mode-tile-container-inner-section'}>
+                        <CustomInput label={'Name'} value={name} setValue={setName}/>
+                    </div>
+                    <div className={'edit-mode-tile-container-inner-section'}>
+                        <CustomInput label={'Function-name'} value={onInteract} setValue={setName}/>
+                    </div>
                 </div>
-                <div className={'edit-mode-tile-container-inner-section'}>
-                    <CustomInput label={'Function-name'} value={onInteract} setValue={setName}/>
-                </div>
+
 
 
             </div>

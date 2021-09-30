@@ -8,6 +8,10 @@ export function Item(props) {
     return state.ItemReducer.items[props.id];
   }, comparisonFunction);
 
+  const zoomLevel = useSelector((state: RootState) => {
+    return state.AppReducer.zoomLevel;
+  });
+
   function comparisonFunction(newItem, oldItem) {
     return newItem.props.isInInventory === oldItem.props.isInInventory && newItem.props.positionX === oldItem.props.positionX && newItem.props.positionY === oldItem.props.positionY;
   }
@@ -27,8 +31,8 @@ export function Item(props) {
         };
       } else {
         styles = {
-          left: item?.props.positionX * 60,
-          top: item?.props.positionY * 60
+          left: item?.props.positionX * 60 * zoomLevel,
+          top: item?.props.positionY * 60 * zoomLevel
         };
       }
 

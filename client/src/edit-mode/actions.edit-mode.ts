@@ -6,7 +6,8 @@ export const EDIT_MODE_ACTIONS = {
         SET_IS_BLOCKING: 'SET_IS_BLOCKING',
         SET_NAME: 'SET_NAME',
         SELECT_TILE_TYPE: 'SELECT_TILE_TYPE',
-        SET_ON_INTERACT: 'SET_ON_INTERACT'
+        SET_ON_INTERACT: 'SET_ON_INTERACT',
+        TOGGLE_TILE_CREATION: 'TOGGLE_TILE_CREATION'
     },
 
     SELECT_TILE: (tile) => {
@@ -19,6 +20,12 @@ export const EDIT_MODE_ACTIONS = {
     TOGGLE_TILE_SELECTION: () => {
         return {
             type: EDIT_MODE_ACTIONS.ENUMS.TOGGLE_TILE_SELECTION
+        };
+    },
+
+    TOGGLE_TILE_CREATION: () => {
+        return {
+            type: EDIT_MODE_ACTIONS.ENUMS.TOGGLE_TILE_CREATION
         };
     },
 

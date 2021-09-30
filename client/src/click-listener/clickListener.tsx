@@ -71,10 +71,9 @@ export function ClickListener() {
         return;
       }
       onToggleInventory();
+    } else if (event.keyCode === KEYMAP.TILE_CREATION) {
+      onToggleTileCreation();
     } else if (event.keyCode === KEYMAP.TILE_SELECTION) {
-      if(isTileSelectionOpen) {
-        return;
-      }
       onToggleTileSelection();
     } else {
       let index = characterRef.current.keysDown.findIndex(item => item === event.keyCode);
@@ -108,9 +107,18 @@ export function ClickListener() {
     doDispatch(ACTIONS.ITEM_ACTIONS.ENUMS.TOGGLE);
   }
 
+  function onToggleTileCreation() {
+    console.log("Triggering");
+    if(location.pathname === '/edit-mode') {
+      let action = ACTIONS.EDIT_MODE_ACTIONS.TOGGLE_TILE_CREATION();
+      dispatch(action);
+    }
+  }
+
   function onToggleTileSelection() {
     if(location.pathname === '/edit-mode') {
-      doDispatch(ACTIONS.EDIT_MODE_ACTIONS.ENUMS.TOGGLE_TILE_SELECTION);
+      let action = ACTIONS.EDIT_MODE_ACTIONS.TOGGLE_TILE_SELECTION();
+      dispatch(action);
     }
   }
 

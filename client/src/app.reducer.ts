@@ -7,7 +7,9 @@ const initialState = {
   characterPosition: {
     x: 0,
     y: 0
-  }
+  },
+  zoomLevel: 1
+
 };
 export function AppReducer(state = initialState, action) {
   let body = $('body');
@@ -15,6 +17,38 @@ export function AppReducer(state = initialState, action) {
   let main = $('.main-container');
   if(isMovementAction(action)) {
     checkCenteringAndScroll(action);
+  } else if (action.type === ACTIONS.APP_ACTIONS.ENUMS.SET_ZOOM_LEVEL) {
+    let currentZoomLevel = state.zoomLevel;
+    let isZoomingIn = currentZoomLevel < action.payload.zoomLevel;
+    state.zoomLevel = action.payload.zoomLevel;
+    document.documentElement.style
+      .setProperty('--zoom-level', action.payload.zoomLevel);
+    if(isZoomingIn) {
+      let currentScrollLeft = html.scrollLeft();
+      let currentScrollTop = html.scrollTop();
+      let halfScreenWidth = html.width() / 2;
+      let halfScreenHeight = html.height() / 2;
+
+      let oldMousePosition = {
+        x: (action.payload.mousePosition.x - halfScreenWidth),
+        y: (action.payload.mousePosition.y - halfScreenWidth)
+      }
+
+
+      let newMousePosition = {
+        x: oldMousePosition.x * (1/action.payload.zoomLevel),
+        y: oldMousePosition.y * (1/action.payload.zoomLevel)
+      }
+
+      let scrollTop = (currentScrollTop + (newMousePosition.y - oldMousePosition.y));
+      let scrollLeft = (currentScrollLeft + (newMousePosition.x - oldMousePosition.x));
+      html.animate({
+        scrollTop,
+        scrollLeft
+      }, 1, 'linear');
+    }
+
+
   }
 
   return {...state};

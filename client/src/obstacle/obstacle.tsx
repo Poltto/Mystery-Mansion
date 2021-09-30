@@ -8,43 +8,18 @@ export function Obstacle(props) {
   const obstacle = useSelector((state: RootState) => {
     return state.ObstacleReducer.obstacles[props.id];
   });
-  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if(isDirty()) {
-  //     let reactElement = React.createElement(Obstacle,
-  //       {
-  //         id: props.id,
-  //         key: props.key,
-  //         positionX: props.positionX,
-  //         positionY: props.positionY,
-  //         isBlocking: props.isBlocking,
-  //         image: props.image,
-  //         onInteract: props.onInteract
-  //       });
-  //     let action = ACTIONS.OBSTACLE_ACTIONS.ADD_OBSTACLES([reactElement]);
-  //     dispatch(action);
-  //   }
-  // });
-
-  function isDirty() {
-    if(!obstacle) {
-      return true;
-    }
-    let comparableFields = ['positionX', 'positionY'];
-    let hasDirtyField = comparableFields.some(field => {
-      return obstacle[field] !== props[field];
-    });
-    return hasDirtyField;
-  }
+  const zoomLevel = useSelector((state: RootState) => {
+    return state.AppReducer.zoomLevel;
+  });
 
   function getStyle() {
     if(!obstacle) {
       return {};
     } else {
       let styles = {
-        left: (obstacle?.props?.positionX ?? 0) * 60,
-        top: (obstacle?.props?.positionY ?? 0) * 60
+        left: (obstacle?.props?.positionX ?? 0) * 60 * zoomLevel,
+        top: (obstacle?.props?.positionY ?? 0) * 60 * zoomLevel
       };
       return styles;
     }

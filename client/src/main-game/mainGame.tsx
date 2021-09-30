@@ -9,8 +9,7 @@ import { Item } from '../endpoints/endpoint.item';
 import {RootState} from "../redux/reducers";
 import { ItemSlot } from '../endpoints/endpoint.item-slot';
 import { gql, useQuery } from '@apollo/client';
-const GAME_OBJECT_QUERIES = require('../graphql/queries/graphql.queries.game-object');
-const ITEM_QUERIES = require('../graphql/queries/graphql.queries.item');
+import { GAME_OBJECT_QUERIES, ITEM_QUERIES } from 'Queries/graphql.queries';
 export function MainGame(props) {
   const dispatch = useDispatch();
 

@@ -107,6 +107,8 @@ module.exports = {
     alias: {
       Types: path.resolve(__dirname, 'src/types/'),
       Helpers: path.resolve(__dirname, 'src/helpers/'),
+      Queries: path.resolve(__dirname, 'src/graphql/queries/'),
+      Mutations: path.resolve(__dirname, 'src/graphql/mutations/'),
       'images': path.resolve(__dirname, 'src/assets/images'),
       'fonts': path.resolve(__dirname, 'src/assets/fonts')
     },

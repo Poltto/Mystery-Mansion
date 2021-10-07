@@ -2,6 +2,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { ACTIONS } from '../redux/actions';
 import {RootState} from "../redux/reducers";
+import { STATICS } from '../enums/statics';
 
 export function Item(props) {
   const item = useSelector((state: RootState) => {
@@ -31,8 +32,8 @@ export function Item(props) {
         };
       } else {
         styles = {
-          left: item?.props.positionX * 60 * zoomLevel,
-          top: item?.props.positionY * 60 * zoomLevel
+          left: item?.props.positionX * STATICS.SQUARE * zoomLevel,
+          top: item?.props.positionY * STATICS.SQUARE * zoomLevel
         };
       }
 

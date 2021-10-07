@@ -1,6 +1,6 @@
 .square {
   position: absolute;
   border: 1px solid #ccc;
-  height: 60px;
-  width: 60px;
+  height: var(--square);
+  width: var(--square);
 }

@@ -1,6 +1,6 @@
 export class STATICS {
 
-  static SQUARE = 60;
+  static SQUARE = 80;
 
   constructor(){}
 

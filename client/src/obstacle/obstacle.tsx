@@ -3,6 +3,7 @@ import { useEventListener } from '../use-event-listener';
 import { useEffect } from 'react';
 import { ACTIONS } from '../redux/actions';
 import {RootState} from "../redux/reducers";
+import { STATICS } from '../enums/statics';
 
 export function Obstacle(props) {
   const obstacle = useSelector((state: RootState) => {
@@ -18,8 +19,8 @@ export function Obstacle(props) {
       return {};
     } else {
       let styles = {
-        left: (obstacle?.props?.positionX ?? 0) * 60 * zoomLevel,
-        top: (obstacle?.props?.positionY ?? 0) * 60 * zoomLevel
+        left: (obstacle?.props?.positionX ?? 0) * STATICS.SQUARE * zoomLevel,
+        top: (obstacle?.props?.positionY ?? 0) * STATICS.SQUARE * zoomLevel
       };
       return styles;
     }
